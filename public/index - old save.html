@@ -3,33 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de rentabilité d'investissement locatif</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <title>Calculateur d'investissement locatif</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body>
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
-        <div id="authContainer">
-            <div id="loginContainer">
-                <h2 class="text-xl font-bold mb-4">Connexion</h2>
-                <input type="email" id="loginEmail" placeholder="Email" class="w-full mb-2 p-2 border rounded">
-                <input type="password" id="loginPassword" placeholder="Mot de passe" class="w-full mb-2 p-2 border rounded">
-                <button onclick="login()" class="bg-blue-500 text-white p-2 rounded">Se connecter</button>
-                <p class="mt-2">Pas encore de compte ? <a href="#" onclick="showRegister()" class="text-blue-500">S'inscrire</a></p>
+        <h1> test firebase mise a jour</h1>
+        <div id="visitSimulation" class="mb-4">
+            <button onclick="simulateVisit(1)" class="bg-blue-500 text-white px-4 py-2 rounded">Simuler première visite</button>
+            <button onclick="simulateVisit(2)" class="bg-blue-500 text-white px-4 py-2 rounded">Simuler deuxième visite</button>
+            <button onclick="simulateVisit(3)" class="bg-blue-500 text-white px-4 py-2 rounded">Simuler visites suivantes</button>
+        </div>
+
+        <div id="loginContainer" style="display: none;">
+            <h2 class="text-xl font-bold mb-4">Connexion</h2>
+            <div>
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" class="w-full border p-2 mb-2">
             </div>
-            
-            <div id="registerContainer" style="display: none;">
-                <h2 class="text-xl font-bold mb-4">Création de compte</h2>
-                <input type="email" id="registerEmail" placeholder="Email" class="w-full mb-2 p-2 border rounded">
-                <input type="password" id="registerPassword" placeholder="Mot de passe" class="w-full mb-2 p-2 border rounded">
-                <input type="text" id="registerName" placeholder="Nom" class="w-full mb-2 p-2 border rounded">
-                <input type="text" id="registerFirstName" placeholder="Prénom" class="w-full mb-2 p-2 border rounded">
-                <input type="date" id="registerBirthdate" placeholder="Date de naissance" class="w-full mb-2 p-2 border rounded">
-                <input type="text" id="registerAddress" placeholder="Adresse" class="w-full mb-2 p-2 border rounded">
-                <button onclick="register()" class="bg-green-500 text-white p-2 rounded">Créer un compte</button>
-                <p class="mt-2">Déjà un compte ? <a href="#" onclick="showLogin()" class="text-blue-500">Se connecter</a></p>
+            <div>
+                <label for="loginPassword">Mot de passe</label>
+                <input type="password" id="loginPassword" class="w-full border p-2 mb-2">
             </div>
+            <button onclick="login()" class="bg-green-500 text-white px-4 py-2 rounded">Se connecter</button>
+            <p class="mt-2">Pas encore de compte ? <a href="#" onclick="showRegister()" class="text-blue-500">S'inscrire</a></p>
+        </div>
+
+        <div id="registerContainer" style="display: none;">
+            <h2 class="text-xl font-bold mb-4">Création de compte</h2>
+            <div>
+                <label for="registerEmail">Email</label>
+                <input type="email" id="registerEmail" class="w-full border p-2 mb-2">
+            </div>
+            <div>
+                <label for="registerPassword">Mot de passe</label>
+                <input type="password" id="registerPassword" class="w-full border p-2 mb-2">
+            </div>
+            <div>
+                <label for="registerName">Nom</label>
+                <input type="text" id="registerName" class="w-full border p-2 mb-2">
+            </div>
+            <div>
+                <label for="registerFirstName">Prénom</label>
+                <input type="text" id="registerFirstName" class="w-full border p-2 mb-2">
+            </div>
+            <div>
+                <label for="registerBirthDate">Date de naissance</label>
+                <input type="date" id="registerBirthDate" class="w-full border p-2 mb-2">
+            </div>
+            <div>
+                <label for="registerAddress">Adresse</label>
+                <input type="text" id="registerAddress" class="w-full border p-2 mb-2">
+            </div>
+            <button onclick="register()" class="bg-green-500 text-white px-4 py-2 rounded">Créer un compte</button>
+            <p class="mt-2">Déjà un compte ? <a href="#" onclick="showLogin()" class="text-blue-500">Se connecter</a></p>
         </div>
 
         <div id="calculatorContainer" style="display: none;">
@@ -95,76 +122,85 @@
     </div>
 
     <script>
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDxNAqQiddzsHcp1b-b_Yeq2-EpwrH2i-Y",
-            authDomain: "renta-immo-b67e5.firebaseapp.com",
-            projectId: "renta-immo-b67e5",
-            storageBucket: "renta-immo-b67e5.appspot.com",
-            messagingSenderId: "79218113340",
-            appId: "1:79218113340:web:6b2c952af5c4c7add07c39",
-            measurementId: "G-VQCNFHWV5Q"
-            // ... autres configurations
-        };
+        let visitCount = 0;
 
-        // Initialiser Firebase
-        firebase.initializeApp(firebaseConfig);
-
-        // Fonctions d'authentification
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            firebase.auth().signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Connexion réussie
+        function simulateVisit(visitNumber) {
+            visitCount++;
+            if (visitCount === 1) {
+                showCalculator();
+				console.log(visitCount);
+				console.log(visitNumber);
+				
+            } else {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user) {
                     showCalculator();
-                })
-                .catch((error) => {
-                    alert("Erreur de connexion : " + error.message);
-                });
-        }
-
-        function register() {
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Enregistrement réussi
-                    // Ici, vous pouvez ajouter du code pour sauvegarder les informations supplémentaires (nom, prénom, etc.) dans Firestore
-                    showCalculator();
-                })
-                .catch((error) => {
-                    alert("Erreur d'inscription : " + error.message);
-                });
+					console.log("user" + visitCount);
+					console.log(user);
+                } else {
+                    showLogin();
+					console.log("no user" + visitCount);
+                }
+            }
         }
 
         function showLogin() {
-            document.getElementById('registerContainer').style.display = 'none';
             document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('registerContainer').style.display = 'none';
+            document.getElementById('calculatorContainer').style.display = 'none';
         }
 
         function showRegister() {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('registerContainer').style.display = 'block';
+            document.getElementById('calculatorContainer').style.display = 'none';
         }
 
         function showCalculator() {
-            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'none';
             document.getElementById('calculatorContainer').style.display = 'block';
         }
 
-        // Vérifier l'état de l'authentification au chargement de la page
-        firebase.auth().onAuthStateChanged((user) => {
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
             if (user) {
-                // L'utilisateur est connecté
+                localStorage.setItem('user', JSON.stringify(user));
                 showCalculator();
             } else {
-                // L'utilisateur n'est pas connecté
-                showLogin();
+                alert("Email ou mot de passe incorrect.");
             }
-        });
+        }
 
-        // Ajouter ici les autres fonctions JS nécessaires pour le calculateur
+        function register() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const name = document.getElementById('registerName').value;
+            const firstName = document.getElementById('registerFirstName').value;
+            const birthDate = document.getElementById('registerBirthDate').value;
+            const address = document.getElementById('registerAddress').value;
+
+            if (email && password && name && firstName && birthDate && address) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                if (users.some(u => u.email === email)) {
+                    alert("Un compte avec cet email existe déjà.");
+                    return;
+                }
+                const newUser = {email, password, name, firstName, birthDate, address};
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('user', JSON.stringify(newUser));
+                showCalculator();
+            } else {
+                alert("Veuillez remplir tous les champs.");
+            }
+        }
+
         function toggleLoanFields() {
             const loanFields = document.getElementById('loanFields');
             const noLoan = document.getElementById('noLoan');
