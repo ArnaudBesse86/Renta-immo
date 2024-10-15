@@ -3,71 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur d'investissement locatif</title>
+    <title>Calculateur de rentabilité d'investissement locatif</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100">
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
-        <h1>Sur Github</h1>
-        <div id="visitSimulation" class="mb-4">
-            <button onclick="simulateVisit(1)" class="bg-blue-500 text-white px-4 py-2 rounded">Simuler première visite</button>
-            <button onclick="simulateVisit(2)" class="bg-blue-500 text-white px-4 py-2 rounded">Simuler deuxième visite</button>
-            <button onclick="simulateVisit(3)" class="bg-blue-500 text-white px-4 py-2 rounded">Simuler visites suivantes</button>
+        <div id="userInfo" class="text-right mb-4">
+            <span id="userName"></span>
+            <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
         </div>
-
-        <div id="loginContainer" style="display: none;">
-            <h2 class="text-xl font-bold mb-4">Connexion</h2>
-            <div>
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" class="w-full border p-2 mb-2">
+        
+        <div id="authContainer">
+            <div id="loginContainer">
+                <h2 class="text-xl font-bold mb-4">Connexion</h2>
+                <input type="email" id="loginEmail" placeholder="Email" class="w-full mb-2 p-2 border rounded">
+                <input type="password" id="loginPassword" placeholder="Mot de passe" class="w-full mb-2 p-2 border rounded">
+                <button onclick="login()" class="bg-blue-500 text-white p-2 rounded">Se connecter</button>
+                <p class="mt-2">Pas encore de compte ? <a href="#" onclick="showRegister()" class="text-blue-500">S'inscrire</a></p>
             </div>
-            <div>
-                <label for="loginPassword">Mot de passe</label>
-                <input type="password" id="loginPassword" class="w-full border p-2 mb-2">
+            
+            <div id="registerContainer" style="display: none;">
+                <h2 class="text-xl font-bold mb-4">Création de compte</h2>
+                <input type="email" id="registerEmail" placeholder="Email" class="w-full mb-2 p-2 border rounded">
+                <input type="password" id="registerPassword" placeholder="Mot de passe" class="w-full mb-2 p-2 border rounded">
+                <input type="text" id="registerName" placeholder="Nom" class="w-full mb-2 p-2 border rounded">
+                <input type="text" id="registerFirstName" placeholder="Prénom" class="w-full mb-2 p-2 border rounded">
+                <input type="date" id="registerBirthdate" placeholder="Date de naissance" class="w-full mb-2 p-2 border rounded">
+                <input type="text" id="registerAddress" placeholder="Adresse" class="w-full mb-2 p-2 border rounded">
+                <button onclick="register()" class="bg-green-500 text-white p-2 rounded">Créer un compte</button>
+                <p class="mt-2">Déjà un compte ? <a href="#" onclick="showLogin()" class="text-blue-500">Se connecter</a></p>
             </div>
-            <button onclick="login()" class="bg-green-500 text-white px-4 py-2 rounded">Se connecter</button>
-            <p class="mt-2">Pas encore de compte ? <a href="#" onclick="showRegister()" class="text-blue-500">S'inscrire</a></p>
-        </div>
-
-        <div id="registerContainer" style="display: none;">
-            <h2 class="text-xl font-bold mb-4">Création de compte</h2>
-            <div>
-                <label for="registerEmail">Email</label>
-                <input type="email" id="registerEmail" class="w-full border p-2 mb-2">
-            </div>
-            <div>
-                <label for="registerPassword">Mot de passe</label>
-                <input type="password" id="registerPassword" class="w-full border p-2 mb-2">
-            </div>
-            <div>
-                <label for="registerName">Nom</label>
-                <input type="text" id="registerName" class="w-full border p-2 mb-2">
-            </div>
-            <div>
-                <label for="registerFirstName">Prénom</label>
-                <input type="text" id="registerFirstName" class="w-full border p-2 mb-2">
-            </div>
-            <div>
-                <label for="registerBirthDate">Date de naissance</label>
-                <input type="date" id="registerBirthDate" class="w-full border p-2 mb-2">
-            </div>
-            <div>
-                <label for="registerAddress">Adresse</label>
-                <input type="text" id="registerAddress" class="w-full border p-2 mb-2">
-            </div>
-            <button onclick="register()" class="bg-green-500 text-white px-4 py-2 rounded">Créer un compte</button>
-            <p class="mt-2">Déjà un compte ? <a href="#" onclick="showLogin()" class="text-blue-500">Se connecter</a></p>
         </div>
 
         <div id="calculatorContainer" style="display: none;">
             <h2 class="text-2xl font-bold mb-6">Calculateur de rentabilité d'investissement locatif</h2>
             <div>
                 <label for="propertyPrice">Prix du bien (€)</label>
-                <input type="number" id="propertyPrice" class="w-full border p-2 mb-2" oninput="calculateNotaryFees()">
+                <input type="number" id="propertyPrice" class="w-full border p-2 mb-2" oninput="calculateNotaryFees(); calculateLoanAmount()" >
             </div>
             <div>
                 <label for="notaryFees">Frais de notaire (€)</label>
-                <input type="number" id="notaryFees" class="w-full border p-2 mb-2" readonly>
+                <input type="number" id="notaryFees" class="w-full border p-2 mb-2" oninput="calculateLoanAmount()">
             </div>
             <div>
                 <label>
@@ -77,10 +56,10 @@
             <div id="loanFields">
                 <div>
                     <label for="downPayment">Apport (€)</label>
-                    <input type="number" id="downPayment" class="w-full border p-2 mb-2">
+                    <input type="number" id="downPayment" class="w-full border p-2 mb-2" oninput="calculateLoanAmount()">
                 </div>
                 <div>
-                    <label for="loanAmount">Montant du prêt (€)</label>
+                    <label for="loanAmount">Montant a emprunter (€)</label>
                     <input type="number" id="loanAmount" class="w-full border p-2 mb-2">
                 </div>
                 <div>
@@ -122,85 +101,118 @@
     </div>
 
     <script>
-        let visitCount = 0;
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAvdnnSLFslpEGuMiNG_N0BePMNJ0lOqnQ",
+            authDomain: "https://rentabilite-immo.firebaseapp.com",
+            projectId: "rentabilite-immo",
+            //storageBucket: "renta-immo-b67e5.appspot.com",
+            //messagingSenderId: "79218113340",
+           // appId: "1:79218113340:web:6b2c952af5c4c7add07c39",
+            //measurementId: "G-VQCNFHWV5Q"
+            // ... autres configurations
+        };
 
-        function simulateVisit(visitNumber) {
-            visitCount++;
-            if (visitCount === 1) {
-                showCalculator();
-				console.log(visitCount);
-				console.log(visitNumber);
-				
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Références aux éléments du DOM
+        const userNameElement = document.getElementById('userName');
+        const logoutButton = document.getElementById('logoutButton');
+
+        // Fonction pour afficher le nom de l'utilisateur
+        function displayUserInfo(user) {
+            if (user) {
+                firebase.firestore().collection('users').doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
+                            logoutButton.style.display = 'inline-block';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erreur lors de la récupération des données utilisateur:", error);
+                    });
             } else {
-                const user = JSON.parse(localStorage.getItem('user'));
-                if (user) {
-                    showCalculator();
-					console.log("user" + visitCount);
-					console.log(user);
-                } else {
-                    showLogin();
-					console.log("no user" + visitCount);
-                }
+                userNameElement.textContent = '';
+                logoutButton.style.display = 'none';
             }
         }
 
-        function showLogin() {
-            document.getElementById('loginContainer').style.display = 'block';
-            document.getElementById('registerContainer').style.display = 'none';
-            document.getElementById('calculatorContainer').style.display = 'none';
-        }
+        // Écouter les changements d'état d'authentification
+        firebase.auth().onAuthStateChanged((user) => {
+            displayUserInfo(user);
+        });
 
-        function showRegister() {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('registerContainer').style.display = 'block';
-            document.getElementById('calculatorContainer').style.display = 'none';
-        }
-
-        function showCalculator() {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('registerContainer').style.display = 'none';
-            document.getElementById('calculatorContainer').style.display = 'block';
-        }
-
+        // Gestion de la déconnexion
+        logoutButton.addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                console.log('Utilisateur déconnecté');
+            }).catch((error) => {
+                console.error('Erreur lors de la déconnexion:', error);
+            });
+        });
+        
+        // Fonctions d'authentification
         function login() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.email === email && u.password === password);
-            
-            if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
-                showCalculator();
-            } else {
-                alert("Email ou mot de passe incorrect.");
-            }
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Connexion réussie
+                    showCalculator();
+                })
+                .catch((error) => {
+                    alert("Erreur de connexion : " + error.message);
+                });
         }
 
         function register() {
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
-            const name = document.getElementById('registerName').value;
-            const firstName = document.getElementById('registerFirstName').value;
-            const birthDate = document.getElementById('registerBirthDate').value;
-            const address = document.getElementById('registerAddress').value;
-
-            if (email && password && name && firstName && birthDate && address) {
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                if (users.some(u => u.email === email)) {
-                    alert("Un compte avec cet email existe déjà.");
-                    return;
-                }
-                const newUser = {email, password, name, firstName, birthDate, address};
-                users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
-                localStorage.setItem('user', JSON.stringify(newUser));
-                showCalculator();
-            } else {
-                alert("Veuillez remplir tous les champs.");
-            }
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Enregistrement réussi
+                    // Ici, vous pouvez ajouter du code pour sauvegarder les informations supplémentaires (nom, prénom, etc.) dans Firestore
+                    const registerName = document.getElementById('registerName').value;3
+                    const firstName = document.getElementById('firstName').value;
+                    const registerBirthdate = document.getElementById('registerBirthdate').value;
+                    const registerAddress = document.getElementById('registerAddress').value;
+                    showCalculator();
+                })
+                .catch((error) => {
+                    alert("Erreur d'inscription : " + error.message);
+                });
         }
 
+        function showLogin() {
+            document.getElementById('registerContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+        }
+
+        function showRegister() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'block';
+        }
+
+        function showCalculator() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('calculatorContainer').style.display = 'block';
+        }
+
+        // Vérifier l'état de l'authentification au chargement de la page
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // L'utilisateur est connecté
+                showCalculator();
+            } else {
+                // L'utilisateur n'est pas connecté
+                showLogin();
+            }
+        });
+
+        // Ajouter ici les autres fonctions JS nécessaires pour le calculateur
         function toggleLoanFields() {
             const loanFields = document.getElementById('loanFields');
             const noLoan = document.getElementById('noLoan');
@@ -210,7 +222,8 @@
         function calculateNotaryFees() {
             const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
             let notaryFees;
-            if (propertyPrice <= 6500) {
+            notaryFees = propertyPrice * 8/100;
+            /*if (propertyPrice <= 6500) {
                 notaryFees = propertyPrice * 0.0385;
             } else if (propertyPrice <= 17000) {
                 notaryFees = propertyPrice * 0.0165 + 143.75;
@@ -218,9 +231,21 @@
                 notaryFees = propertyPrice * 0.011 + 236.25;
             } else {
                 notaryFees = propertyPrice * 0.00825 + 406.25;
-            }
+            }*/
             document.getElementById('notaryFees').value = notaryFees.toFixed(2);
         }
+
+        function calculateLoanAmount() {
+            const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
+            const notaryFees = parseFloat(document.getElementById('notaryFees').value) || 0;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            let loanAmount;
+            loanAmount = propertyPrice + notaryFees - downPayment;
+            
+            document.getElementById('loanAmount').value = loanAmount.toFixed(2);
+        
+        }
+
 
         function calculateProfitability() {
             const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
@@ -269,6 +294,7 @@
         window.onload = function() {
             toggleLoanFields();
             calculateNotaryFees();
+            calculateLoanAmount();
         }
     </script>
 </body>
