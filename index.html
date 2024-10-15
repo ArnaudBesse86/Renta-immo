@@ -15,23 +15,21 @@
         
         <div id="authContainer">
             <div id="loginContainer">
-                <h2 class="text-xl font-bold mb-4">Connexion</h2>
-                <input type="email" id="loginEmail" placeholder="Email" class="w-full mb-2 p-2 border rounded">
-                <input type="password" id="loginPassword" placeholder="Mot de passe" class="w-full mb-2 p-2 border rounded">
-                <button onclick="login()" class="bg-blue-500 text-white p-2 rounded">Se connecter</button>
-                <p class="mt-2">Pas encore de compte ? <a href="#" onclick="showRegister()" class="text-blue-500">S'inscrire</a></p>
+                <h2 id="connexion" class="text-xl font-bold mb-4">Connexion</h2>
+                <input type="email" id="loginEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full">
+                <input type="password" id="loginPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full">
+                <button onclick="login()" class="bg-blue-500 text-white p-2 rounded w-full">Se connecter</button>
+                <p class="mt-2">Pas encore de compte ? <a href="#" class="text-blue-500" onclick="showRegister()">S'inscrire</a></p>
             </div>
-            
+
             <div id="registerContainer" style="display: none;">
-                <h2 class="text-xl font-bold mb-4">Création de compte</h2>
-                <input type="email" id="registerEmail" placeholder="Email" class="w-full mb-2 p-2 border rounded">
-                <input type="password" id="registerPassword" placeholder="Mot de passe" class="w-full mb-2 p-2 border rounded">
-                <input type="text" id="registerName" placeholder="Nom" class="w-full mb-2 p-2 border rounded">
-                <input type="text" id="registerFirstName" placeholder="Prénom" class="w-full mb-2 p-2 border rounded">
-                <input type="date" id="registerBirthdate" placeholder="Date de naissance" class="w-full mb-2 p-2 border rounded">
-                <input type="text" id="registerAddress" placeholder="Adresse" class="w-full mb-2 p-2 border rounded">
-                <button onclick="register()" class="bg-green-500 text-white p-2 rounded">Créer un compte</button>
-                <p class="mt-2">Déjà un compte ? <a href="#" onclick="showLogin()" class="text-blue-500">Se connecter</a></p>
+                <h2 id="création-de-compte" class="text-xl font-bold mb-4">Création de compte</h2>
+                <input type="text" id="registerFirstName" placeholder="Prénom" class="mb-2 p-2 border rounded w-full">
+                <input type="text" id="registerLastName" placeholder="Nom" class="mb-2 p-2 border rounded w-full">
+                <input type="email" id="registerEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full">
+                <input type="password" id="registerPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full">
+                <button onclick="register()" class="bg-green-500 text-white p-2 rounded w-full">Créer un compte</button>
+                <p class="mt-2">Déjà un compte ? <a href="#" class="text-blue-500" onclick="showLogin()">Se connecter</a></p>
             </div>
         </div>
 
@@ -92,7 +90,7 @@
         </div>
 
         <div id="resultat" class="mt-6 p-4 bg-gray-200 rounded" style="display: none;">
-            <h3 class="text-xl font-semibold mb-2">Résultats :</h3>
+            <h3 id="résultats" class="text-xl font-semibold mb-2">Résultats :</h3>
             <div id="resultatsContenu"></div>
         </div>
     </div>
@@ -100,8 +98,8 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Configuration Firebase
         const firebaseConfig = {
@@ -128,13 +126,15 @@
         async function displayUserInfo(user) {
             if (user) {
                 try {
-                    const docRef = doc(db, 'users', user.uid);
+                    const docRef = doc(db, 'utilisateurs', user.uid);
                     const docSnap = await getDoc(docRef);
                     
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
                         userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
                         logoutButton.style.display = 'inline-block';
+                        document.getElementById('authContainer').style.display = 'none';
+                        document.getElementById('calculatorContainer').style.display = 'block';
                     }
                 } catch (error) {
                     console.error("Erreur lors de la récupération des données utilisateur:", error);
@@ -142,6 +142,8 @@
             } else {
                 userNameElement.textContent = '';
                 logoutButton.style.display = 'none';
+                document.getElementById('authContainer').style.display = 'block';
+                document.getElementById('calculatorContainer').style.display = 'none';
             }
         }
 
@@ -159,44 +161,57 @@
             });
         });
         
-        // Fonctions d'authentification
-        function login() {
+         // Fonction de connexion
+         window.login = function() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            firebase.auth().signInWithEmailAndPassword(email, password)
+            signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     // Connexion réussie
-                    showCalculator();
+                    const user = userCredential.user;
+                    console.log('Utilisateur connecté:', user);
                 })
                 .catch((error) => {
-                    alert("Erreur de connexion : " + error.message);
+                    console.error('Erreur de connexion:', error);
+                    alert('Erreur de connexion: ' + error.message);
                 });
         }
-
-        function register() {
+         // Fonction d'inscription
+         window.register = function() {
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
-            firebase.auth().createUserWithEmailAndPassword(email, password)
+            const prenom = document.getElementById('registerFirstName').value;
+            const nom = document.getElementById('registerLastName').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Enregistrement réussi
-                    // Ici, vous pouvez ajouter du code pour sauvegarder les informations supplémentaires (nom, prénom, etc.) dans Firestore
-                    const registerName = document.getElementById('registerName').value;3
-                    const firstName = document.getElementById('firstName').value;
-                    const registerBirthdate = document.getElementById('registerBirthdate').value;
-                    const registerAddress = document.getElementById('registerAddress').value;
-                    showCalculator();
+                    // Inscription réussie
+                    const user = userCredential.user;
+                    // Ajouter les informations supplémentaires à Firestore
+                    return setDoc(doc(db, 'users', user.uid), {
+                        prenom: prenom,
+                        nom: nom,
+                        email: email
+                    });
+                })
+                .then(() => {
+                    console.log('Utilisateur inscrit et données ajoutées à Firestore');
                 })
                 .catch((error) => {
-                    alert("Erreur d'inscription : " + error.message);
+                    console.error('Erreur d\'inscription:', error);
+                    alert('Erreur d\'inscription: ' + error.message);
                 });
         }
 
-        function showLogin() {
-            document.getElementById('registerContainer').style.display = 'none';
+        
+        // Fonction pour afficher le formulaire de connexion
+        window.showLogin = function() {
             document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('registerContainer').style.display = 'none';
         }
 
-        function showRegister() {
+        // Fonction pour afficher le formulaire d'inscription
+        window.showRegister = function() {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('registerContainer').style.display = 'block';
         }
@@ -207,7 +222,7 @@
         }
 
         // Vérifier l'état de l'authentification au chargement de la page
-        firebase.auth().onAuthStateChanged((user) => {
+       /* firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 // L'utilisateur est connecté
                 showCalculator();
@@ -215,7 +230,7 @@
                 // L'utilisateur n'est pas connecté
                 showLogin();
             }
-        });
+        });*/
 
         // Ajouter ici les autres fonctions JS nécessaires pour le calculateur
         function toggleLoanFields() {
@@ -302,9 +317,7 @@
             calculateLoanAmount();
         }
 
-        // Exposer les fonctions showLogin et showRegister globalement si nécessaire
-        window.showLogin = showLogin;
-        window.showRegister = showRegister;
+
     </script>
 </body>
 </html>
