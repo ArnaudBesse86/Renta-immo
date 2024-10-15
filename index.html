@@ -27,6 +27,7 @@
                 <input type="text" id="registerFirstName" placeholder="Prénom" class="mb-2 p-2 border rounded w-full">
                 <input type="text" id="registerLastName" placeholder="Nom" class="mb-2 p-2 border rounded w-full">
                 <input type="email" id="registerEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full">
+                <input type="date" id="registerBirthDate" placeholder="Date de naissance" class="mb-2 p-2 border rounded w-full">
                 <input type="password" id="registerPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full">
                 <button onclick="register()" class="bg-green-500 text-white p-2 rounded w-full">Créer un compte</button>
                 <p class="mt-2">Déjà un compte ? <a href="#" class="text-blue-500" onclick="showLogin()">Se connecter</a></p>
@@ -187,6 +188,8 @@
             const password = document.getElementById('registerPassword').value;
             const prenom = document.getElementById('registerFirstName').value;
             const nom = document.getElementById('registerLastName').value;
+            const birthDate = document.getElementById('registerBirthDate').value;
+            
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
@@ -197,7 +200,8 @@
                         prenom: prenom,
                         nom: nom,
                         email: email,
-                        password: password
+                        password: password,
+                        birthDate: birthDate
                     });
                 })
                 .then(() => {
