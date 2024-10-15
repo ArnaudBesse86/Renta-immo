@@ -131,7 +131,7 @@
                     
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
-                        userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
+                        userNameElement.textContent = `${userData.prenom} ${userData.nom} ${userData.email}`;
                         logoutButton.style.display = 'inline-block';
                         document.getElementById('authContainer').style.display = 'none';
                         document.getElementById('calculatorContainer').style.display = 'block';
@@ -170,10 +170,15 @@
                     // Connexion réussie
                     const user = userCredential.user;
                     console.log('Utilisateur connecté:', user);
+                    showCalculator();
+                    console.log('Utilisateur connecté:', user.email);
+                    //userNameElement.textContent = `${user.email}`;
+                    //logoutButton.style.display = 'inline-block';
                 })
                 .catch((error) => {
                     console.error('Erreur de connexion:', error);
                     alert('Erreur de connexion: ' + error.message);
+                    showLogin();
                 });
         }
          // Fonction d'inscription
@@ -188,10 +193,11 @@
                     // Inscription réussie
                     const user = userCredential.user;
                     // Ajouter les informations supplémentaires à Firestore
-                    return setDoc(doc(db, 'users', user.uid), {
+                    return setDoc(doc(db, 'utilisateurs', user.uid), {
                         prenom: prenom,
                         nom: nom,
-                        email: email
+                        email: email,
+                        password: password
                     });
                 })
                 .then(() => {
@@ -203,7 +209,7 @@
                 });
         }
 
-        
+
         // Fonction pour afficher le formulaire de connexion
         window.showLogin = function() {
             document.getElementById('loginContainer').style.display = 'block';
@@ -233,13 +239,13 @@
         });*/
 
         // Ajouter ici les autres fonctions JS nécessaires pour le calculateur
-        function toggleLoanFields() {
+        window.toggleLoanFields = function() {
             const loanFields = document.getElementById('loanFields');
             const noLoan = document.getElementById('noLoan');
             loanFields.style.display = noLoan.checked ? 'none' : 'block';
         }
 
-        function calculateNotaryFees() {
+        window.calculateNotaryFees = function() {
             const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
             let notaryFees;
             notaryFees = propertyPrice * 8/100;
@@ -255,7 +261,7 @@
             document.getElementById('notaryFees').value = notaryFees.toFixed(2);
         }
 
-        function calculateLoanAmount() {
+        window.calculateLoanAmount = function() {
             const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
             const notaryFees = parseFloat(document.getElementById('notaryFees').value) || 0;
             const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
@@ -267,7 +273,7 @@
         }
 
 
-        function calculateProfitability() {
+        window.calculateProfitability = function() {
             const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
             const notaryFees = parseFloat(document.getElementById('notaryFees').value) || 0;
             const noLoan = document.getElementById('noLoan').checked;
