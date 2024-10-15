@@ -6,10 +6,16 @@
     <title>Calculateur de rentabilité d'investissement locatif</title>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
+        <div id="userInfo" class="text-right mb-4">
+            <span id="userName"></span>
+            <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
+        </div>
+        
         <div id="authContainer">
             <div id="loginContainer">
                 <h2 class="text-xl font-bold mb-4">Connexion</h2>
@@ -110,6 +116,44 @@
         // Initialiser Firebase
         firebase.initializeApp(firebaseConfig);
 
+        // Références aux éléments du DOM
+        const userNameElement = document.getElementById('userName');
+        const logoutButton = document.getElementById('logoutButton');
+
+        // Fonction pour afficher le nom de l'utilisateur
+        function displayUserInfo(user) {
+            if (user) {
+                firebase.firestore().collection('users').doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
+                            logoutButton.style.display = 'inline-block';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erreur lors de la récupération des données utilisateur:", error);
+                    });
+            } else {
+                userNameElement.textContent = '';
+                logoutButton.style.display = 'none';
+            }
+        }
+
+        // Écouter les changements d'état d'authentification
+        firebase.auth().onAuthStateChanged((user) => {
+            displayUserInfo(user);
+        });
+
+        // Gestion de la déconnexion
+        logoutButton.addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                console.log('Utilisateur déconnecté');
+            }).catch((error) => {
+                console.error('Erreur lors de la déconnexion:', error);
+            });
+        });
+        
         // Fonctions d'authentification
         function login() {
             const email = document.getElementById('loginEmail').value;
@@ -131,6 +175,10 @@
                 .then((userCredential) => {
                     // Enregistrement réussi
                     // Ici, vous pouvez ajouter du code pour sauvegarder les informations supplémentaires (nom, prénom, etc.) dans Firestore
+                    const registerName = document.getElementById('registerName').value;3
+                    const firstName = document.getElementById('firstName').value;
+                    const registerBirthdate = document.getElementById('registerBirthdate').value;
+                    const registerAddress = document.getElementById('registerAddress').value;
                     showCalculator();
                 })
                 .catch((error) => {
