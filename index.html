@@ -8,9 +8,9 @@
 </head>
 <body class="bg-gray-100">
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
-        <div id="userInfo" class="text-right mb-4">
-            <span id="userName"></span>
-            <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
+        <div id="userInfo" class="mb-4 w-full p-6">
+            <div class="float-left" id="userName"></div>
+            <div class="float-right" id="myaccount"><a href="myaccount.html">Mon compte</a></div>
         </div>
         
         <div id="authContainer">
@@ -94,13 +94,19 @@
             <h3 id="résultats" class="text-xl font-semibold mb-2">Résultats :</h3>
             <div id="resultatsContenu"></div>
         </div>
+
+        <div class="text-right">
+
+            <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
+
+        </div>
     </div>
 
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Configuration Firebase
         const firebaseConfig = {
@@ -122,6 +128,8 @@
         // Références aux éléments du DOM
         const userNameElement = document.getElementById('userName');
         const logoutButton = document.getElementById('logoutButton');
+        const myaccount = document.getElementById('myaccount');
+        
 
         // Fonction pour afficher le nom de l'utilisateur
         async function displayUserInfo(user) {
@@ -134,6 +142,7 @@
                         const userData = docSnap.data();
                         userNameElement.textContent = `${userData.prenom} ${userData.nom} ${userData.email}`;
                         logoutButton.style.display = 'inline-block';
+                        myaccount.style.display = 'inline-block';
                         document.getElementById('authContainer').style.display = 'none';
                         //document.getElementById('calculatorContainer').style.display = 'block';
                         const container = document.getElementById('calculatorContainer');
@@ -151,6 +160,7 @@
             } else {
                 userNameElement.textContent = '';
                 logoutButton.style.display = 'none';
+                myaccount.style.display = 'none';
                 document.getElementById('authContainer').style.display = 'block';
                 //document.getElementById('calculatorContainer').style.display='none';
                 const container = document.getElementById('calculatorContainer');
@@ -313,6 +323,13 @@
 
 
         window.calculateProfitability = function() {
+
+                    // Function to safely get input value
+                    const getInputValue = (id) => {
+                            const element = document.getElementById(id);
+                            return element ? Number(element.value) || 0 : 0;
+                        };                    
+            
                 const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
                 const notaryFees = parseFloat(document.getElementById('notaryFees').value) || 0;
                 const noLoan = document.getElementById('noLoan').checked;
@@ -354,6 +371,44 @@
                 `;
                 
                     resultatDiv.style.display = 'block';
+
+                     // Check if user is authenticated
+                    const user = auth.currentUser;
+
+
+
+                    if (user) {
+                        // User is signed in, proceed with Firestore insertion
+                        try {
+                            const uniqueId = Date.now().toString();
+                            const docRef = doc(db, "mes-calculs", uniqueId);
+
+                            setDoc(docRef, {
+                                dateCreation: new Date().toISOString(),
+                                apport: Number(downPayment),
+                                assurance: Number(insurance),
+                                chargescopro: Number(coownershipCharges),
+                                dureeemprunt: Number(loanDuration),
+                                fraisdenotaire: Number(notaryFees),
+                                fraisgestionlocative: Number(managementFees),
+                                loyermensuel: Number(monthlyRent),
+                                montantemprunt: Number(loanAmount),
+                                prixdubien: Number(propertyPrice),
+                                tauxinteret: Number(interestRate),
+                                taxefonciere: Number(propertyTax),
+                                idutilisateur: user.uid
+                            });
+                            console.log("Document written with ID: ", uniqueId);
+                            alert("Calcul sauvegardé avec succès!");
+                        } catch (e) {
+                            console.error("Error adding document: ", e);
+                            // You can add an error message to the UI here
+                            alert("Erreur lors de la sauvegarde du calcul. Veuillez réessayer.");
+                                    }
+                    } else {
+                        console.log("User is not signed in. Data not saved to Firestore.");
+                        alert("Veuillez vous connecter pour sauvegarder vos calculs.");
+                    }
                 
             
         }
