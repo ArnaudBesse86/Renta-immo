@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de rentabilité d'investissement locatif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4">
+        <header class="py-6 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="" alt="Logo" class="mr-2">
+                <span class="text-xl font-bold">Poppilia</span>
+            </div>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-4">
+                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Ceceilos</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Foinge</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Indigges</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Sumesgs</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Premium</a></li>
+                </ul>
+            </nav>
+            <div id="userInfo" class="hidden md:block">
+                <span id="userName" class="mr-4"></span>
+                <a href="myaccount.html" id="myaccount" class="text-blue-500">Mon compte</a>
+            </div>
+            <button id="menuToggle" class="md:hidden text-gray-600 hover:text-gray-900">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-white p-4 rounded-lg shadow-lg mb-4">
+            <ul class="space-y-2">
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Ceceilos</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Foinge</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Indigges</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Sumesgs</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Premium</a></li>
+                <li><a href="myaccount.html" class="block text-blue-500">Mon compte</a></li>
+            </ul>
+        </div>
+
+        <main class="mt-10">
+            <h1 class="text-3xl md:text-4xl font-bold mb-6">Calculater de innetabiltie s investments Innrórfiak</h1>
+            <p class="text-lg md:text-xl mb-8">Farisice rind anes claddis tennettuitey d'reinzturamat suriomera arat of enicomialtig ol oditios.</p>
+
+            <div id="authContainer" class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
+                <div id="loginContainer">
+                    <h2 id="connexion" class="text-xl font-bold mb-4">Connexion</h2>
+                        <input type="email" id="loginEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full">
+                        <input type="password" id="loginPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full">
+                        <button onclick="login()" class="bg-blue-500 text-white p-2 rounded w-full">Se connecter</button>
+                    <p>Pas encore de compte ? <a href="#" class="text-blue-500" onclick="showRegister()">S'inscrire</a></p>
+                </div>
+                <div id="registerContainer" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4">Création de compte</h2>
+                    <p>Créer un compte</p>
+                    <p>Déjà un compte ? <a href="#" class="text-blue-500" onclick="showLogin()">Se connecter</a></p>
+                </div>
+            </div>
+
+
+            <div id="alert-additional-content-3" class="hidden p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+                <div class="flex items-center">
+                  <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                  </svg>
+                  <span class="sr-only">Info</span>
+                  <h3 class="text-lg font-medium">Simulation sauvegardée avec succès</h3>
+                </div>
+                <div class="mt-2 mb-4 text-sm">
+                  Retrouvez là dans votre compte dès maintenant ou refaite une simulation via le formulaire ci-dessous.
+                </div>
+                <div class="flex">
+                  <button type="button" class="text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                    <svg class="me-2 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+                      <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+                    </svg>
+                    <a href="myaccount.html">Voir mon compte</a> 
+                  </button>
+                  <button type="button" id="btn-dismissalert3" class="text-green-800 bg-transparent border border-green-800 hover:bg-green-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-green-600 dark:border-green-600 dark:text-green-400 dark:hover:text-white dark:focus:ring-green-800" data-dismiss-target="#alert-additional-content-3" aria-label="Close">
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+
+
+            <div id="calculatorContainer" class="bg-white rounded-lg shadow-lg p-6 md:p-8" style="display: none;">
+                <h2 class="text-2xl font-bold mb-6">Calculateur de rentabilité d'investissement locatif</h2>
+                <!--<form id="calculatorForm">-->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="propertyPrice" class="block mb-2">Prix du bien (€)</label>
+                            <input type="number" id="propertyPrice" name="propertyPrice" class="w-full p-2 border" required oninput="calculateNotaryFees(); calculateLoanAmount()">
+                        </div>
+                        <div>
+                            <label for="notaryFees" class="block mb-2">Frais de notaire (€)</label>
+                            <input type="number" id="notaryFees" name="notaryFees" class="w-full p-2 border" oninput="calculateLoanAmount()">
+                        </div>
+                        <div>
+                            <label for="noLoan" class="block mb-2">
+                                <input type="checkbox" id="noLoan" name="noLoan" onchange="toggleLoanFields()"> Sans emprunt
+                            </label>
+                        </div>
+                    </div>
+                    <div id="loanFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label for="downPayment" class="block mb-2">Apport (€)</label>
+                            <input type="number" id="downPayment" name="downPayment" class="w-full p-2 border" required oninput="calculateLoanAmount()">
+                        </div>
+                        <div>
+                            <label for="loanAmount" class="block mb-2">Montant à emprunter (€)</label>
+                            <input type="number" id="loanAmount" name="loanAmount" class="w-full p-2 border" required>
+                        </div>
+                        <div>
+                            <label for="loanDuration" class="block mb-2">Durée de l'emprunt (années)</label>
+                            <input type="number" id="loanDuration" name="loanDuration" class="w-full p-2 border" required>
+                        </div>
+                        <div>
+                            <label for="interestRate" class="block mb-2">Taux d'intérêt annuel (%)</label>
+                            <input type="number" id="interestRate" name="interestRate" step="0.01" class="w-full p-2 border" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label for="monthlyRent" class="block mb-2">Loyer mensuel estimé (€)</label>
+                            <input type="number" id="monthlyRent" name="monthlyRent" class="w-full p-2 border" required>
+                        </div>
+                        <div>
+                            <label for="propertyTax" class="block mb-2">Taxe foncière annuelle (€)</label>
+                            <input type="number" id="propertyTax" name="propertyTax" class="w-full p-2 border">
+                        </div>
+                        <div>
+                            <label for="coownershipCharges" class="block mb-2">Charges de copropriété annuelles (€)</label>
+                            <input type="number" id="coownershipCharges" name="coownershipCharges" class="w-full p-2 border">
+                        </div>
+                        <div>
+                            <label for="insurance" class="block mb-2">Assurance annuelle (€)</label>
+                            <input type="number" id="insurance" name="insurance" class="w-full p-2 border">
+                        </div>
+                        <div>
+                            <label for="managementFees" class="block mb-2">Frais de gestion locative (%)</label>
+                            <input type="number" id="managementFees" name="managementFees" step="0.01" class="w-full p-2 border">
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="calculateProfitability()" class="bg-green-500 text-white px-6 py-2 w-full md:w-auto">Calculer la rentabilité</button>
+                    </div>
+                <!--</form>-->
+            </div>
+
+            <div id="resultat" class="mt-8 bg-gray-200 p-6 rounded-lg" style="display: none;">
+                <h3 class="text-2xl font-bold mb-4">Résultats :</h3>
+                <div id="resultatsContenu"></div>
+            </div>
+
+            <div class="text-right">
+
+                <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
+    
+            </div>
+        </main>
+
+        <section class="my-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8">Guides et Articles</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-green-100 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                        <img src="" alt="Icon" class="w-6 h-6">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Bickid ungeties</h3>
+                    <p>Le ce prpruntaits egret at mitigne devine da omeireedilo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-blue-100 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                        <img src="" alt="Icon" class="w-6 h-6">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Cols forgromes</h3>
+                    <p>Consent any dessice et eaoitic pien ol de saection.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-yellow-100 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                        <img src="" alt="Icon" class="w-6 h-6">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Alenuite aprieners</h3>
+                    <p>Che p oft cuite lo demites et apatitse priciatute.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-red-100 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                        <img src="" alt="Icon" class="w-6 h-6">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Contrats invrciocs</h3>
+                    <p>Cloot earminipae slamitre a insutier et alalei.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyAvdnnSLFslpEGuMiNG_N0BePMNJ0lOqnQ",
+        authDomain: "https://rentabilite-immo.firebaseapp.com",
+        projectId: "rentabilite-immo",
+        storageBucket: "gs://rentabilite-immo.appspot.com",
+        //messagingSenderId: "79218113340",
+       // appId: "1:79218113340:web:6b2c952af5c4c7add07c39",
+        //measurementId: "G-VQCNFHWV5Q"
+        // ... autres configurations
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Références aux éléments du DOM
+    const userNameElement = document.getElementById('userName');
+    const logoutButton = document.getElementById('logoutButton');
+    const myaccount = document.getElementById('myaccount');
+    
+
+    // Fonction pour afficher le nom de l'utilisateur
+    async function displayUserInfo(user) {
+        if (user) {
+            try {
+                const docRef = doc(db, 'utilisateurs', user.uid);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    userNameElement.textContent = `${userData.prenom} ${userData.nom} ${userData.email}`;
+                    logoutButton.style.display = 'inline-block';
+                    myaccount.style.display = 'inline-block';
+                    document.getElementById('authContainer').style.display = 'none';
+                    //document.getElementById('calculatorContainer').style.display = 'block';
+                    const container = document.getElementById('calculatorContainer');
+                    const styles = {
+                        display: 'block',
+                        opacity: 1,
+                    };
+
+                    Object.assign(container.style, styles);
+
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données utilisateur:", error);
+            }
+        } else {
+            userNameElement.textContent = '';
+            logoutButton.style.display = 'none';
+            myaccount.style.display = 'none';
+            document.getElementById('authContainer').style.display = 'block';
+            //document.getElementById('calculatorContainer').style.display='none';
+            const container = document.getElementById('calculatorContainer');
+            const styles = {
+                display: 'block',
+                opacity: 0.5,
+            };
+
+            Object.assign(container.style, styles);
+        }
+    }
+
+    // Écouter les changements d'état d'authentification
+    onAuthStateChanged(auth, (user) => {
+        displayUserInfo(user);
+    });
+
+    // Gestion de la déconnexion
+    logoutButton.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            console.log('Utilisateur déconnecté');
+        }).catch((error) => {
+            console.error('Erreur lors de la déconnexion:', error);
+        });
+    });
+    
+     // Fonction de connexion
+     window.login = function() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Connexion réussie
+                const user = userCredential.user;
+                console.log('Utilisateur connecté:', user);
+                showCalculator();
+                console.log('Utilisateur connecté:', user.email);
+                //userNameElement.textContent = `${user.email}`;
+                //logoutButton.style.display = 'inline-block';
+            })
+            .catch((error) => {
+                console.error('Erreur de connexion:', error);
+                alert('Erreur de connexion: ' + error.message);
+                showLogin();
+            });
+    }
+
+
+    // Fonction pour valider le mot de passe
+    function validatePassword(password) {
+        // Au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+}
+     // Fonction d'inscription
+     window.register = function() {
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const prenom = document.getElementById('registerFirstName').value;
+        const nom = document.getElementById('registerLastName').value;
+        const birthDate = document.getElementById('registerBirthDate').value;
+        
+
+        // Validation des champs
+        if (!email || !password || !prenom || !nom || !birthDate) {
+                alert("Tous les champs sont obligatoires.");
+                return;
+            }
+
+            if (!validatePassword(password)) {
+                alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
+                return;
+            }
+
+
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Inscription réussie
+                const user = userCredential.user;
+                // Ajouter les informations supplémentaires à Firestore
+                return setDoc(doc(db, 'utilisateurs', user.uid), {
+                    prenom: prenom,
+                    nom: nom,
+                    email: email,
+                    birthDate: birthDate
+                });
+            })
+            .then(() => {
+                console.log('Utilisateur inscrit et données ajoutées à Firestore');
+            })
+            .catch((error) => {
+                console.error('Erreur d\'inscription:', error);
+                alert('Erreur d\'inscription: ' + error.message);
+            });
+    }
+
+
+    // Fonction pour afficher le formulaire de connexion
+    window.showLogin = function() {
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('registerContainer').style.display = 'none';
+    }
+
+    // Fonction pour afficher le formulaire d'inscription
+    window.showRegister = function() {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('registerContainer').style.display = 'block';
+    }
+
+    function showCalculator() {
+        document.getElementById('authContainer').style.display = 'none';
+        document.getElementById('calculatorContainer').style.display = 'block';
+    }
+
+    // Vérifier l'état de l'authentification au chargement de la page
+   /* firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            // L'utilisateur est connecté
+            showCalculator();
+        } else {
+            // L'utilisateur n'est pas connecté
+            showLogin();
+        }
+    });*/
+
+    // Ajouter ici les autres fonctions JS nécessaires pour le calculateur
+    window.toggleLoanFields = function() {
+        const loanFields = document.getElementById('loanFields');
+        const noLoan = document.getElementById('noLoan');
+        loanFields.style.visibility = noLoan.checked ? 'hidden' : 'visible';
+        loanFields.style.display = noLoan.checked ? 'none' : '';
+    }
+
+    window.calculateNotaryFees = function() {
+        const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
+        let notaryFees;
+        notaryFees = propertyPrice * 8/100;
+        /*if (propertyPrice <= 6500) {
+            notaryFees = propertyPrice * 0.0385;
+        } else if (propertyPrice <= 17000) {
+            notaryFees = propertyPrice * 0.0165 + 143.75;
+        } else if (propertyPrice <= 60000) {
+            notaryFees = propertyPrice * 0.011 + 236.25;
+        } else {
+            notaryFees = propertyPrice * 0.00825 + 406.25;
+        }*/
+        document.getElementById('notaryFees').value = notaryFees.toFixed(2);
+    }
+
+    window.calculateLoanAmount = function() {
+        const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || 0;
+        const notaryFees = parseFloat(document.getElementById('notaryFees').value) || 0;
+        const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+        let loanAmount;
+        loanAmount = propertyPrice + notaryFees - downPayment;
+        
+        document.getElementById('loanAmount').value = loanAmount.toFixed(2);
+    
+    }
+
+
+    window.calculateProfitability = function() {
+
+                // Function to safely get input value
+                const getInputValue = (id) => {
+                        const element = document.getElementById(id);
+                        return element ? Number(element.value) || 0 : 0;
+                    };                    
+        
+
+            const propertyPrice = parseFloat(document.getElementById('propertyPrice').value) || null;
+            const monthlyRent = parseFloat(document.getElementById('monthlyRent').value) || null;
+            const noLoan = document.getElementById('noLoan').checked;
+            const notaryFees = parseFloat(document.getElementById('notaryFees').value) ||null;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || null;
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) ||null;
+            const loanDuration = parseFloat(document.getElementById('loanDuration').value) || null;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || null;
+            const propertyTax = parseFloat(document.getElementById('propertyTax').value) || 0;
+            const coownershipCharges = parseFloat(document.getElementById('coownershipCharges').value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+            const managementFees = parseFloat(document.getElementById('managementFees').value) || 0;
+
+            // Verify required fields are not null or 0
+           /* if (propertyPrice === null || monthlyRent === null) {
+                // Récupérer tous les champs requis
+                const requiredFields = document.querySelectorAll('input[required]');
+
+                // Boucle sur chaque champ requis
+                requiredFields.forEach(field => {
+                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
+                    if (!field.value) {
+                        field.classList.add('border-red-500');
+                    } else {
+                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
+                        field.classList.remove('border-red-500');
+                    }
+                });
+
+                return; // Arrêter la fonction
+            }*/
+
+
+            if ((propertyPrice === null || monthlyRent === null) ||!noLoan  && (downPayment === null || loanAmount === null || loanDuration === null || interestRate === null))
+            {
+                // Récupérer tous les champs requis
+                const requiredFields = document.querySelectorAll('input[required]');
+
+                // Boucle sur chaque champ requis
+                requiredFields.forEach(field => {
+                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
+                    if (!field.value) {
+                        field.classList.add('border-red-500');
+                    } else {
+                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
+                        field.classList.remove('border-red-500');
+                    }
+                });
+
+                return; // Arrêter la fonction
+            }
+        
+
+
+
+
+       
+
+
+            let monthlyLoanPayment = 0;
+            if (!noLoan) {
+                const monthlyRate = interestRate / 100 / 12;
+                const numberOfPayments = loanDuration * 12;
+                monthlyLoanPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+            }
+
+            const totalInvestment = propertyPrice + notaryFees;
+            const annualRent = monthlyRent * 12;
+            const annualCharges = propertyTax + coownershipCharges + insurance + (annualRent * managementFees / 100);
+            const annualCashFlow = annualRent - annualCharges - (monthlyLoanPayment * 12);
+
+            const grossYield = (annualRent / totalInvestment) * 100;
+            const netYield = (annualCashFlow / totalInvestment) * 100;
+
+            const resultatDiv = document.getElementById('resultat');
+            const resultatsContenu = document.getElementById('resultatsContenu');
+            resultatsContenu.innerHTML = `
+                <p>Investissement total : ${totalInvestment.toFixed(2)} €</p>
+                <p>Loyers annuels : ${annualRent.toFixed(2)} €</p>
+                <p>Charges annuelles : ${annualCharges.toFixed(2)} €</p>
+                <p>Mensualité du prêt : ${monthlyLoanPayment.toFixed(2)} €</p>
+                <p>Cash-flow annuel : ${annualCashFlow.toFixed(2)} €</p>
+                <p>Rentabilité brute : ${grossYield.toFixed(2)}%</p>
+                <p>Rentabilité nette : ${netYield.toFixed(2)}%</p>
+            `;
+            
+                resultatDiv.style.display = 'block';
+
+                 // Check if user is authenticated
+                const user = auth.currentUser;
+
+
+
+                if (user) {
+                    // User is signed in, proceed with Firestore insertion
+                    try {
+                        const uniqueId = Date.now().toString();
+                        const docRef = doc(db, "mes-calculs", uniqueId);
+
+                        setDoc(docRef, {
+                            dateCreation: new Date().toISOString(),
+                            apport: Number(downPayment),
+                            assurance: Number(insurance),
+                            chargescopro: Number(coownershipCharges),
+                            dureeemprunt: Number(loanDuration),
+                            fraisdenotaire: Number(notaryFees),
+                            fraisgestionlocative: Number(managementFees),
+                            loyermensuel: Number(monthlyRent),
+                            montantemprunt: Number(loanAmount),
+                            prixdubien: Number(propertyPrice),
+                            tauxinteret: Number(interestRate),
+                            taxefonciere: Number(propertyTax),
+                            idutilisateur: user.uid
+                        });
+                        console.log("Document written with ID: ", uniqueId);
+                        document.getElementById('alert-additional-content-3').classList.remove('hidden');
+                        //alert("Calcul sauvegardé avec succès!");
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                        // You can add an error message to the UI here
+                        alert("Erreur lors de la sauvegarde du calcul. Veuillez réessayer.");
+                                }
+                } else {
+                    console.log("User is not signed in. Data not saved to Firestore.");
+                    alert("Veuillez vous connecter pour sauvegarder vos calculs.");
+                }
+            
+        
+    }
+
+    // Initialisation
+    window.onload = function() {
+        toggleLoanFields();
+        calculateNotaryFees();
+        calculateLoanAmount();
+    }
+
+
+
+        // Toggle du menu mobile
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+
+        document.getElementById('btn-dismissalert3').addEventListener('click', function() {
+            document.getElementById('alert-additional-content-3').classList.add('hidden');
+        });
+
+       /* document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Ici, vous pouvez ajouter la logique de calcul
+            document.getElementById('resultat').style.display = 'block';
+            document.getElementById('resultatsContenu').innerHTML = 'Résultats du calcul ici...';
+        });*/
+
+
+</script>
+</body>
+</html>
