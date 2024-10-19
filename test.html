@@ -50,15 +50,28 @@
             <div id="authContainer" class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
                 <div id="loginContainer">
                     <h2 id="connexion" class="text-xl font-bold mb-4">Connexion</h2>
-                        <input type="email" id="loginEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full">
-                        <input type="password" id="loginPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full">
+                        <input type="email" id="loginEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full" required>
+                        <input type="password" id="loginPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full" required>
                         <button onclick="login()" class="bg-blue-500 text-white p-2 rounded w-full">Se connecter</button>
                     <p>Pas encore de compte ? <a href="#" class="text-blue-500" onclick="showRegister()">S'inscrire</a></p>
                 </div>
                 <div id="registerContainer" style="display: none;">
                     <h2 class="text-xl font-bold mb-4">Création de compte</h2>
-                    <p>Créer un compte</p>
-                    <p>Déjà un compte ? <a href="#" class="text-blue-500" onclick="showLogin()">Se connecter</a></p>
+                    <input type="text" id="registerFirstName" placeholder="Prénom" class="mb-2 p-2 border rounded w-full" required>
+                    <input type="text" id="registerLastName" placeholder="Nom" class="mb-2 p-2 border rounded w-full" required>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pb-1.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                            <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                            <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                            </svg>
+                        </div>
+                        <input type="email" id="registerEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full ps-10" required>
+                    </div> 
+                    <input type="date" id="registerBirthDate" placeholder="Date de naissance" class="mb-2 p-2 border rounded w-full" required>
+                    <input type="password" id="registerPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full" required>
+                    <button onclick="register()" class="bg-green-500 text-white p-2 rounded w-full">Créer un compte</button>
+                        <p>Déjà un compte ? <a href="#" class="text-blue-500" onclick="showLogin()">Se connecter</a></p>
                 </div>
             </div>
 
@@ -288,6 +301,24 @@
      window.login = function() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
+
+                // Récupérer tous les champs requis
+                const requiredFields = document.getElementById('loginContainer').querySelectorAll('input[required]');
+
+                // Boucle sur chaque champ requis
+                requiredFields.forEach(field => {
+                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
+                    if (!field.value) {
+                        field.classList.add('border-red-500');
+                        return;
+                    } else {
+                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
+                        field.classList.remove('border-red-500');
+                    }
+                });
+
+
+
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Connexion réussie
@@ -300,7 +331,7 @@
             })
             .catch((error) => {
                 console.error('Erreur de connexion:', error);
-                alert('Erreur de connexion: ' + error.message);
+                //alert('Erreur de connexion: ' + error.message);
                 showLogin();
             });
     }
@@ -323,8 +354,23 @@
 
         // Validation des champs
         if (!email || !password || !prenom || !nom || !birthDate) {
-                alert("Tous les champs sont obligatoires.");
-                return;
+               
+                // Récupérer tous les champs requis
+                const requiredFields = document.getElementById('registerContainer').querySelectorAll('input[required]');
+
+                // Boucle sur chaque champ requis
+                requiredFields.forEach(field => {
+                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
+                    if (!field.value) {
+                        field.classList.add('border-red-500');
+                    } else {
+                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
+                        field.classList.remove('border-red-500');
+                    }
+                });
+                 return;
+           
+           
             }
 
             if (!validatePassword(password)) {
@@ -465,7 +511,7 @@
             if ((propertyPrice === null || monthlyRent === null) ||!noLoan  && (downPayment === null || loanAmount === null || loanDuration === null || interestRate === null))
             {
                 // Récupérer tous les champs requis
-                const requiredFields = document.querySelectorAll('input[required]');
+                const requiredFields = document.getElementById('calculatorContainer').querySelectorAll('input[required]');
 
                 // Boucle sur chaque champ requis
                 requiredFields.forEach(field => {
