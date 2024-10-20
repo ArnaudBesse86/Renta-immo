@@ -6,46 +6,73 @@
     <title>Calculateur de rentabilité d'investissement locatif</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
+        .font-gabriela {
+            font-family: 'Gabriela', serif;
+        }
+
+        h1, h2, h3, button, a {
+        font-family: 'Gabriela', serif!important;
+       }
+
+
+
+        
+        </style>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4">
         <header class="py-6 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="" alt="Logo" class="mr-2">
-                <span class="text-xl font-bold">Poppilia</span>
+            <div class="flex flex-col items-center mx-0">
+                <div class="w-1/5 aspect-[127/110] relative mb-2">
+                   
+                    <img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg">
+                        
+                </div>
+                <h1 class="text-center whitespace-nowrap text-[4vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1vw] font-bold mb-1 font-gabriela">
+                    <span class="text-[#2980B9]">Calcul</span>
+                    <span class="text-[#96CA2D]">Rentabilité</span>
+                    <span class="text-[#545454]">Immo</span>
+                </h1>
+                <div class="w-full flex justify-center">
+                <img class="w-1/5 h-auto" viewBox="0 0 171 30" src="logo/calcul-rentabilite-immo_logo_courbe.svg">
+
+                </div>
+                <p class="text-[#91AA9D] whitespace-nowrap text-[2.2vw] sm:text-[1.4vw] md:text-[1vw] lg:text-[0.8vw] mt-1">Votre guide pour investir simplement et sereinement</p>
             </div>
-            <nav class="hidden md:block">
-                <ul class="flex space-x-4">
-                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Ceceilos</a></li>
-                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Foinge</a></li>
-                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Indigges</a></li>
-                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Sumesgs</a></li>
-                    <li><a href="#" class="text-gray-600 hover:text-gray-900">Premium</a></li>
-                </ul>
-            </nav>
-            <div id="userInfo" class="hidden md:block">
-                <span id="userName" class="mr-4"></span>
-                <a href="myaccount.html" id="myaccount" class="text-blue-500">Mon compte</a>
+            
+            <div id="userInfo" class="text-center text-[#96CA2D]">
+                <p id="userName" class="text-center font-gabriela"></p>
+
+                <button id="menuToggle" class="text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-            <button id="menuToggle" class="md:hidden text-gray-600 hover:text-gray-900">
-                <i class="fas fa-bars"></i>
-            </button>
+            
         </header>
 
-        <div id="mobileMenu" class="hidden md:hidden bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div id="mobileMenu" class="hidden bg-white p-4 rounded-lg shadow-lg mb-4">
             <ul class="space-y-2">
                 <li><a href="#" class="block text-gray-600 hover:text-gray-900">Ceceilos</a></li>
                 <li><a href="#" class="block text-gray-600 hover:text-gray-900">Foinge</a></li>
                 <li><a href="#" class="block text-gray-600 hover:text-gray-900">Indigges</a></li>
                 <li><a href="#" class="block text-gray-600 hover:text-gray-900">Sumesgs</a></li>
                 <li><a href="#" class="block text-gray-600 hover:text-gray-900">Premium</a></li>
-                <li><a href="myaccount.html" class="block text-blue-500">Mon compte</a></li>
             </ul>
+            <div id="userInfoMobile" class="">
+                <a href="myaccount.html" id="myaccountMobile" class="text-blue-500">Mon compte</a>
+                <br /><br />
+                <button id="logoutButtonMobile" class="text-blue-500 text-xs" style="display: none;">Se déconnecter</button>
+            </div>
+
         </div>
 
         <main class="mt-10">
-            <h1 class="text-3xl md:text-4xl font-bold mb-6">Calculater de innetabiltie s investments Innrórfiak</h1>
-            <p class="text-lg md:text-xl mb-8">Farisice rind anes claddis tennettuitey d'reinzturamat suriomera arat of enicomialtig ol oditios.</p>
+            <h1 class="text-2xl font-bold mb-6">Calculez et maximisez la rentabilité de vos investissements locatifs</h1>
+            <p class="text-x0.5 mb-8">Remplissez ce formulaire pour obtenir instantanément une première estimation de rentabilité.
+                Vous pourrez ensuite accéder à vos fiches projets personnalisées, ainsi qu'à des guides pratiques et simples pour vous accompagner à chaque étape de vos investissements.
+                Optimisez vos profits, créez des leviers et générez des revenus passifs en toute sérénité</p>
 
             <div id="authContainer" class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
                 <div id="loginContainer">
@@ -102,7 +129,7 @@
 
 
             <div id="calculatorContainer" class="bg-white rounded-lg shadow-lg p-6 md:p-8" style="display: none;">
-                <h2 class="text-2xl font-bold mb-6">Calculateur de rentabilité d'investissement locatif</h2>
+                <h2 class="text-2xl font-bold mb-6">Calculateur de rentabilité</h2>
                 <!--<form id="calculatorForm">-->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -170,11 +197,6 @@
                 <div id="resultatsContenu"></div>
             </div>
 
-            <div class="text-right">
-
-                <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
-    
-            </div>
         </main>
 
         <section class="my-16">
@@ -236,9 +258,13 @@
     const db = getFirestore(app);
 
     // Références aux éléments du DOM
-    const userNameElement = document.getElementById('userName');
-    const logoutButton = document.getElementById('logoutButton');
-    const myaccount = document.getElementById('myaccount');
+   const userNameElement = document.getElementById('userName');
+    //const logoutButton = document.getElementById('logoutButton');
+    //const myaccount = document.getElementById('myaccount');
+    //const userNameElementMobile = document.getElementById('userNameMobile');
+    const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+    const myaccountMobile = document.getElementById('myaccountMobile');
+
     
 
     // Fonction pour afficher le nom de l'utilisateur
@@ -250,9 +276,12 @@
                 
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
-                    userNameElement.textContent = `${userData.prenom} ${userData.nom} ${userData.email}`;
-                    logoutButton.style.display = 'inline-block';
-                    myaccount.style.display = 'inline-block';
+                   userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
+                    //logoutButton.style.display = 'inline-block';
+                    //myaccount.style.display = 'inline-block';
+                   // userNameElementMobile.textContent = `${userData.prenom} ${userData.nom} ${userData.email}`;
+                   logoutButtonMobile.style.display = 'inline-block';
+                    myaccountMobile.style.display = 'inline-block';
                     document.getElementById('authContainer').style.display = 'none';
                     //document.getElementById('calculatorContainer').style.display = 'block';
                     const container = document.getElementById('calculatorContainer');
@@ -269,8 +298,11 @@
             }
         } else {
             userNameElement.textContent = '';
-            logoutButton.style.display = 'none';
-            myaccount.style.display = 'none';
+            //logoutButton.style.display = 'none';
+           // myaccount.style.display = 'none';
+            //userNameElementMobile.textContent = '';
+            logoutButtonMobile.style.display = 'none';
+            myaccountMobile.style.display = 'none';
             document.getElementById('authContainer').style.display = 'block';
             //document.getElementById('calculatorContainer').style.display='none';
             const container = document.getElementById('calculatorContainer');
@@ -289,7 +321,14 @@
     });
 
     // Gestion de la déconnexion
-    logoutButton.addEventListener('click', () => {
+    /*logoutButton.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            console.log('Utilisateur déconnecté');
+        }).catch((error) => {
+            console.error('Erreur lors de la déconnexion:', error);
+        });
+    });*/
+    logoutButtonMobile.addEventListener('click', () => {
         signOut(auth).then(() => {
             console.log('Utilisateur déconnecté');
         }).catch((error) => {
