@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de rentabilité d'investissement locatif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
+        .font-gabriela {
+            font-family: 'Gabriela', serif;
+        }
+
+        h1, h2, h3, button, a {
+        font-family: 'Gabriela', serif!important;
+       }
+
+
+
+        
+        </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4">
+        <header class="py-6 flex justify-between items-center">
+            <div class="flex flex-col items-center mx-0">
+                <div class="w-1/6 aspect-[127/110] relative mb-2">
+                   
+                    <img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg">
+                        
+                </div>
+                <h1 class="text-center whitespace-nowrap text-[4vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.5vw] font-bold mb-1 font-gabriela">
+                    <span class="text-[#2980B9]">Calcul</span>
+                    <span class="text-[#96CA2D]">Rentabilité</span>
+                    <span class="text-[#545454]">Immo</span>
+                </h1>
+                <div class="w-full flex justify-center">
+                <img class="w-1/5 lg:w-1/4 h-auto" viewBox="0 0 171 30" src="logo/calcul-rentabilite-immo_logo_courbe.svg">
+
+                </div>
+                <p class="text-[#91AA9D] whitespace-nowrap text-[2.2vw] sm:text-[1.4vw] md:text-[1.2vw] lg:text-[0.8vw] mt-1">Votre guide pour investir simplement et sereinement</p>
+            </div>
+            
+            <div id="userInfo" class="text-center text-[#96CA2D]">
+                <p id="userName" class="text-center font-gabriela"></p>
+
+                <button id="menuToggle" class="text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+        </header>
+
+        <div id="mobileMenu" class="hidden bg-white p-4 rounded-lg shadow-lg mb-4">
+            <ul class="space-y-2">
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Ceceilos</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Foinge</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Indigges</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Sumesgs</a></li>
+                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Premium</a></li>
+            </ul>
+            <div id="userInfoMobile" class="">
+                <a href="myaccount.html" id="myaccountMobile" class="text-blue-500">Mon compte</a>
+                <br /><br />
+                <button id="logoutButtonMobile" class="text-blue-500 text-xs" style="display: none;">Se déconnecter</button>
+            </div>
+
+        </div>
+
+        <main class="mt-10">
+            <div id="guides-container" class="">
+                <!-- Les guides seront insérés ici dynamiquement -->
+            </div> 
+
+        </main>
+
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAvdnnSLFslpEGuMiNG_N0BePMNJ0lOqnQ",
+            authDomain: "https://rentabilite-immo.firebaseapp.com",
+            projectId: "rentabilite-immo",
+            storageBucket: "gs://rentabilite-immo.appspot.com",
+            //messagingSenderId: "79218113340",
+           // appId: "1:79218113340:web:6b2c952af5c4c7add07c39",
+            //measurementId: "G-VQCNFHWV5Q"
+            // ... autres configurations
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+    
+
+        // Fonction pour obtenir les paramètres de l'URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Fonction pour charger et afficher les détails du guide
+        async function loadGuideDetails() {
+            const guideId = getUrlParameter('id');
+            if (!guideId) {
+                console.error('Aucun ID de guide trouvé dans l\'URL');
+                return;
+            }
+
+            const guideRef = doc(db, 'Guides', guideId);
+
+            try {
+                const docSnap = await getDoc(guideRef);
+
+                if (docSnap.exists()) {
+                    const guideData = docSnap.data();
+                    const guideContainer = document.getElementById('guides-container');
+
+                    guideContainer.innerHTML = `
+                    <div class="w-full lg:flex lg:flex-row lg:space-x-6">
+                        <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
+                            <img src="${guideData.imageGuide}" alt="Guide icon" class="w-full h-auto object-cover rounded-lg shadow-md">
+                        </div>
+                        
+                        <div class="w-full lg:w-1/2">
+                            <h1 class="text-2xl lg:text-3xl font-bold mb-6">${guideData.TitreGuide}</h1>
+                            
+                            <div class="mt-4">
+                                <p class="text-gray-700 leading-relaxed">${guideData.IntroductionGuide}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full mt-6">
+                        <p class="text-gray-700 leading-relaxed">${guideData.ArticleGuide}</p>
+                        <p class="text-gray-700 leading-relaxed">${guideData.ConclusionGuide}</p>
+                    </div>
+                    `;
+                } else {
+                    console.log('Aucun guide trouvé avec cet ID');
+                    guideContainer.innerHTML = '<p class="text-red-500">Guide non trouvé.</p>';
+                }
+            } catch (error) {
+                console.error("Erreur lors du chargement du guide:", error);
+                guideContainer.innerHTML = '<p class="text-red-500">Erreur lors du chargement du guide. Veuillez réessayer plus tard.</p>';
+            }
+        }
+
+    // Initialisation
+    window.onload = function() {
+        loadGuideDetails();
+    }
+    </script>
+</body>
+</html>
