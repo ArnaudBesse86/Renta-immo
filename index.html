@@ -263,6 +263,10 @@
         const noLoan = document.getElementById('noLoan');
         loanFields.style.visibility = noLoan.checked ? 'hidden' : 'visible';
         loanFields.style.display = noLoan.checked ? 'none' : '';
+
+        if (noLoan.checked) {
+            loanAmount.value = 0; // Met à jour le champ loanAmount à 0
+    }
     }
 
     window.calculateNotaryFees = function() {

@@ -5,30 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de rentabilité d'investissement locatif</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="output.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
+        .font-gabriela {
+            font-family: 'Gabriela', serif;
+        }
+
+        h1, h2, h3, button, a {
+        font-family: 'Gabriela', serif!important;
+        }
+
+        
+        #calculsList div {
+            background-color: #f9f9f9;
+        }
+        #calculsList div ul {
+            list-style: none;
+        }
+        #calculsList div ul li{
+            padding: 6px;
+        }
+        #calculsList li:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        canvas {
+            margin: 20px 0;
+        }
+
+    </style>
 </head>
 <body class="bg-gray-100">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
-        <div id="userInfo" class="mb-4 w-full p-6 min-h-32">
-            <div class="float-left">
-                Nom : <span id="userName"></span><br />
-                Prénom : <span id="userFirstName"></span><br />
-                Email : <span id="userEmail"></span><br />
-                Date de naissance : <span id="userBirthDate"></span>
+    <div class="container mx-auto px-4">
+
+        <header class="py-6 flex justify-between items-center">
+            <div class="flex flex-col items-center mx-0">
+                <div class="w-1/6 aspect-[127/110] relative mb-2">
+                   
+                    <a href="index.html"><img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg" alt="calcul Rentabilité Immo"></a>
+                        
+                </div>
+                <h1 class="text-center whitespace-nowrap text-[4vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.5vw] font-bold mb-1 font-gabriela">
+                    <span class="text-[#2980B9]">Calcul</span>
+                    <span class="text-[#96CA2D]">Rentabilité</span>
+                    <span class="text-[#545454]">Immo</span>
+                </h1>
+                <div class="w-full flex justify-center">
+                <img class="w-1/5 lg:w-1/4 h-auto" viewBox="0 0 171 30" src="logo/calcul-rentabilite-immo_logo_courbe.svg">
+
+                </div>
+                <p class="text-[#91AA9D] whitespace-nowrap text-[2.2vw] sm:text-[1.4vw] md:text-[1.2vw] lg:text-[0.8vw] mt-1">Votre guide pour investir simplement et sereinement</p>
             </div>
-            <div class="float-right">
-                <a href="index.html">Faire une nouvelle simulation</a> 
+            
+            <div id="userInfo" class="text-center text-[#96CA2D]">
+                <p id="userName" class="text-center font-gabriela"></p>
+
+                <button id="menuToggle" class="text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
+            
+        </header>
+
+        <div id="mobileMenu" class="hidden bg-white p-4 rounded-lg shadow-lg mb-4">
+            <ul class="space-y-2 mb-6">
+                <li><a href="index.html#calculatorContainer" class="block text-gray-600 hover:text-gray-900">Calculateur de rentabilité</a></li>
+                <li><a href="#guides-container" class="block text-gray-600 hover:text-gray-900">Liste des Guides et Articles sur l'investissement locatif immobilier</a></li>
+                <li><a href="#guides-container" class="block text-gray-600 hover:text-gray-900">Retrouvez les études sur les villes dans lesquelles vous souhaitez investir</a></li>
+            </ul>
+            <div id="userInfoMobile" class="">
+                <a href="myaccount.html" id="myaccountMobile" class="text-blue-500">Mon compte</a>
+                <br /><br />
+                <button id="logoutButtonMobile" class="text-blue-500 text-xs" style="display: none;">Se déconnecter</button>
+            </div>
+
         </div>
-        
-        <!-- Nouvel emplacement pour la liste des calculs -->
-        <h3 class="mt-4 font-bold">Mes Calculs</h3>
-        <div id="calculsList"></div>  
 
-        <div class="text-right">
+        <main class="mt-10">
+            <div id="authContainer"></div>
+            
+            <div class="">
+                <div id="userInfo" class="w-full p-6 mb-6">
+                    <div class="">
+                        Nom : <span id="userNameMyAccount"></span><br />
+                        Prénom : <span id="userFirstName"></span><br />
+                        Email : <span id="userEmail"></span><br />
+                        Date de naissance : <span id="userBirthDate"></span>
+                    
+                        <br /><br />
+                        <a class="bg-[#2980B9] text-white text-nowrap px-6 py-2 mt-6" href="index.html">Faire une nouvelle simulation</a>
+                    </div>
+                </div>
+                
+                <!-- Nouvel emplacement pour la liste des calculs -->
+                <h3 class="mt-4 font-bold">Mes simulations</h3>
+                <div id="calculsList"></div>  
 
-            <button id="logoutButton" class="ml-2 text-blue-500" style="display: none;">Se déconnecter</button>
+            </div>
+        </main>
 
-        </div>
     </div>
 
     <script type="module">
@@ -38,8 +120,8 @@
         import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
+import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, setDoc, orderBy } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js';
 
 
         // Configuration Firebase
@@ -59,14 +141,164 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+
+
+ // Toggle du menu mobile
+ document.getElementById('menuToggle').addEventListener('click', function() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('hidden');
+});
+
+
+
+
         // Références aux éléments du DOM
         const userNameElement = document.getElementById('userName');
+        const userNameMyAccountElement = document.getElementById('userNameMyAccount');
         const userFirstNameElement = document.getElementById('userFirstName');
         const userEmailElement = document.getElementById('userEmail');
         const userBirthDateElement = document.getElementById('userBirthDate');
-        const logoutButton = document.getElementById('logoutButton');
+        const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+        const myaccountMobile = document.getElementById('myaccountMobile');
 
-        // Fonction pour afficher le nom de l'utilisateur
+
+
+     // Fonction de connexion
+     window.login = function() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+                // Récupérer tous les champs requis
+                const requiredFields = document.getElementById('loginContainer').querySelectorAll('input[required]');
+
+                // Boucle sur chaque champ requis
+                requiredFields.forEach(field => {
+                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
+                    if (!field.value) {
+                        field.classList.add('border-red-500');
+                        return;
+                    } else {
+                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
+                        field.classList.remove('border-red-500');
+                    }
+                });
+
+
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Connexion réussie
+                const user = userCredential.user;
+                console.log('Utilisateur connecté:', user);
+                console.log('Utilisateur connecté:', user.email);
+                //userNameElement.textContent = `${user.email}`;
+                //logoutButton.style.display = 'inline-block';
+            })
+            .catch((error) => {
+                console.error('Erreur de connexion:', error);
+                //alert('Erreur de connexion: ' + error.message);
+                showLogin();
+            });
+    }
+
+
+    // Fonction pour valider le mot de passe
+    function validatePassword(password) {
+        // Au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+}
+     // Fonction d'inscription
+     window.register = function() {
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const prenom = document.getElementById('registerFirstName').value;
+        const nom = document.getElementById('registerLastName').value;
+        const birthDate = document.getElementById('registerBirthDate').value;
+        
+
+        // Validation des champs
+        if (!email || !password || !prenom || !nom || !birthDate) {
+               
+                // Récupérer tous les champs requis
+                const requiredFields = document.getElementById('registerContainer').querySelectorAll('input[required]');
+
+                // Boucle sur chaque champ requis
+                requiredFields.forEach(field => {
+                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
+                    if (!field.value) {
+                        field.classList.add('border-red-500');
+                    } else {
+                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
+                        field.classList.remove('border-red-500');
+                    }
+                });
+                 return;
+           
+           
+            }
+
+            if (!validatePassword(password)) {
+                alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
+                return;
+            }
+
+
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Inscription réussie
+                const user = userCredential.user;
+                // Ajouter les informations supplémentaires à Firestore
+                return setDoc(doc(db, 'utilisateurs', user.uid), {
+                    prenom: prenom,
+                    nom: nom,
+                    email: email,
+                    birthDate: birthDate
+                });
+            })
+            .then(() => {
+                console.log('Utilisateur inscrit et données ajoutées à Firestore');
+            })
+            .catch((error) => {
+                console.error('Erreur d\'inscription:', error);
+                alert('Erreur d\'inscription: ' + error.message);
+            });
+    }
+
+
+
+
+
+
+
+
+    // Fonction pour afficher le formulaire de connexion
+    window.showLogin = function() {
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('registerContainer').style.display = 'none';
+    }
+
+    // Fonction pour afficher le formulaire d'inscription
+    window.showRegister = function() {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('registerContainer').style.display = 'block';
+    }
+
+
+
+
+        function loadHTML(elementID, fileName) {
+            fetch(fileName)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(elementID).innerHTML = data;
+                })
+                .catch(error => console.log('Erreur lors du chargement du fichier:', error));
+        }
+
+
+// Fonction pour afficher le nom de l'utilisateur
         async function displayUserInfo(user) {
             if (user) {
                 try {
@@ -75,19 +307,23 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc
 
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
-                        userNameElement.textContent = `${userData.nom}`;
+                        userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
+                        userNameMyAccountElement.textContent = `${userData.nom}`;
                         userFirstNameElement.textContent = `${userData.prenom}`;
                         userEmailElement.textContent = `${userData.email}`;
                         userBirthDateElement.textContent = `${userData.birthDate}`;
-                        logoutButton.style.display = 'inline-block';
-                        //document.getElementById('authContainer').style.display = 'none';
+                        logoutButtonMobile.style.display = 'inline-block';
+                        myaccountMobile.style.display = 'inline-block';
+                        document.getElementById('authContainer').style.display = 'none';
                     }
                 } catch (error) {
                             console.error("Erreur lors de la récupération des données utilisateur:", error);
                     }
             } else {
-                    userNameElement.textContent = '';
-                    logoutButton.style.display = 'none';
+                    //userNameElement.textContent = '';
+                    logoutButtonMobile.style.display = 'none';
+                    myaccountMobile.style.display = 'none';
+
                     document.getElementById('authContainer').style.display = 'block';
                     //document.getElementById('calculatorContainer').style.display='none';
             }
@@ -95,100 +331,209 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc
 
         
 
+
+
+
+
        // Fonction pour afficher les calculs de l'utilisateur
-        function displayUserCalculs(user) {
-        const calculsList = document.getElementById('calculsList');
-        calculsList.innerHTML = ''; // Nettoyer la liste existante
+       function displayUserCalculs(user) {
+    const calculsList = document.getElementById('calculsList');
+    calculsList.innerHTML = ''; // Nettoyer la liste existante
 
-        if (!user) {
-            calculsList.innerHTML = '<p>Veuillez vous connecter pour voir vos calculs.</p>';
-            return;
-        }
+    if (!user) {
+        calculsList.innerHTML = '<p>Veuillez vous connecter pour voir vos simulations.</p>';
+        return;
+    }
 
-        console.log("Utilisateur connecté:", user.uid);
+    console.log("Utilisateur connecté:", user.uid);
 
-        const calculQuery = query(collection(db, "mes-calculs"), where("idutilisateur", "==", user.uid));
-        console.log("calculQuery:", calculQuery); // Pour le débogage
+    const calculQuery = query(collection(db, "mes-calculs"), where("idutilisateur", "==", user.uid));
+    console.log("calculQuery:", calculQuery); // Pour le débogage
 
-        getDocs(calculQuery)
-            .then((querySnapshot) => {
+    getDocs(calculQuery)
+        .then((querySnapshot) => {
             console.log("Nombre de documents récupérés:", querySnapshot.size);
             if (querySnapshot.empty) {
-                calculsList.innerHTML = '<p>Aucun calcul trouvé pour cet utilisateur.</p>';
+                calculsList.innerHTML = '<p>Aucune simulation trouvée. <a class="text-[#2980B9] underline" href="index.html">Faire ma première simulation</a></p>';
             } else {
                 querySnapshot.forEach((doc) => {
-                console.log("Document data:", doc.data());
-                
-                const calcul = doc.data();
-                const calculDiv = document.createElement('div');
-                calculDiv.className = 'mb-4 p-4 border rounded';
+                    console.log("Document data:", doc.data());
 
-                const dateCreation = calcul.dateCreation ? new Date(calcul.dateCreation).toLocaleDateString('fr-FR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-                }) : 'Non spécifiée';
+                    const calcul = doc.data();
+                    const calculDiv = document.createElement('div');
+                    calculDiv.className = 'mb-4 p-4 border rounded';
 
-                calculDiv.innerHTML = `
-                    <h3 class="font-bold">Calcul ID: ${doc.id}</h3>
-                    <ul class="list-disc pl-5 mt-2">
-                        <li>Prix du bien: ${calcul.prixdubien || '0'} €</li>
-                        <li>Frais de notaire: ${calcul.fraisdenotaire || '0'} €</li>
-                        <li>Apport: ${calcul.apport || '0'} €</li>
-                        <li>Montant emprunt: ${calcul.montantemprunt || '0'} €</li>
-                        <li>Durée emprunt: ${calcul.dureeemprunt || '0'} ans</li>
-                        <li>Taux d'intérêt: ${calcul.tauxinteret || '0'} %</li>                        
-                        <li>Loyer mensuel: ${calcul.loyermensuel || '0'} €</li>
-                        <li>Taxe foncière: ${calcul.taxefonciere || '0'} €</li>
-                        <li>Charges copropriété: ${calcul.chargescopro || '0'} €</li>
-                        <li>Assurance: ${calcul.assurance || '0'} €</li>
-                        <li>Frais gestion locative: ${calcul.fraisgestionlocative || '0'} %</li>
-                        <li>Date de création: ${dateCreation}</li>
-                    </ul>
-                    <!-- Bouton de suppression -->
-                    <div class="w-full text-right">
-                        <button class="delete-btn text-red-500 mt-2" data-id="${doc.id}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                `;
+                    const dateCreation = calcul.dateCreation ? new Date(calcul.dateCreation).toLocaleDateString('fr-FR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    }) : 'Non spécifiée';
 
-                calculsList.appendChild(calculDiv);
+                    calculDiv.innerHTML = `
+                        <h3 class="font-bold">Détails financiers de l'investissement locatif</h3>
+                        <ul class="list-disc mt-2">
+                            <li>Prix du bien: ${calcul.prixdubien || '0'} €</li>
+                            <li>Frais de notaire: ${calcul.fraisdenotaire || '0'} €</li>
+                            <li>Apport: ${calcul.apport || '0'} €</li>
+                            <li>Montant emprunt: ${calcul.montantemprunt || '0'} €</li>
+                            <li>Durée emprunt: ${calcul.dureeemprunt || '0'} ans</li>
+                            <li>Taux d'intérêt: ${calcul.tauxinteret || '0'} %</li>                        
+                            <li>Loyer mensuel: ${calcul.loyermensuel || '0'} €</li>
+                            <li>Taxe foncière: ${calcul.taxefonciere || '0'} €</li>
+                            <li>Charges copropriété: ${calcul.chargescopro || '0'} €</li>
+                            <li>Assurance: ${calcul.assurance || '0'} €</li>
+                            <li>Frais gestion locative: ${calcul.fraisgestionlocative || '0'} %</li>
+                            <li>Date de création: ${dateCreation}</li>
+                        </ul>
+
+                        <div class="resultat">
+                            <div class="resultatsContenu"></div>
+                        </div>
+                        
+                        <div class="container">
+                            <canvas class="investmentChart" width="600" height="400"></canvas>
+                        </div>
+
+                        <div class="w-full text-right">
+                            <button class="delete-btn text-red-500 mt-2" data-id="${doc.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+
+                    calculsList.appendChild(calculDiv);
+
+                    // Calculs pour afficher la rentabilité
+                    const propertyPrice = calcul.prixdubien || 0;
+                    const notaryFees = calcul.fraisdenotaire || 0;
+                    const loanAmount = calcul.montantemprunt || 0;
+                    const loanDuration = calcul.dureeemprunt || 0;
+                    const interestRate = calcul.tauxinteret || 0;
+                    const monthlyRent = calcul.loyermensuel || 0;
+                    const propertyTax = calcul.taxefonciere || 0;
+                    const coownershipCharges = calcul.chargescopro || 0;
+                    const insurance = calcul.assurance || 0;
+                    const managementFees = calcul.fraisgestionlocative || 0;
+
+                    let monthlyLoanPayment = 0;
+                    if (loanDuration > 0) {
+                        const monthlyRate = interestRate / 100 / 12;
+                        const numberOfPayments = loanDuration * 12;
+                        monthlyLoanPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                    }
+
+                    const totalInvestment = propertyPrice + notaryFees;
+                    const annualRent = monthlyRent * 12;
+                    const annualCharges = propertyTax + coownershipCharges + insurance + (annualRent * managementFees / 100);
+                    const annualCashFlow = annualRent - annualCharges - (monthlyLoanPayment * 12);
+
+                    const grossYield = (annualRent / totalInvestment) * 100;
+                    const netYield = (annualCashFlow / totalInvestment) * 100;
+
+                    const resultatsContenu = calculDiv.querySelector('.resultatsContenu');
+                    resultatsContenu.innerHTML = `
+                        <p>Investissement total : ${totalInvestment.toFixed(2)} €</p>
+                        <p>Loyers annuels : ${annualRent.toFixed(2)} €</p>
+                        <p>Charges annuelles : ${annualCharges.toFixed(2)} €</p>
+                        <p>Mensualité du prêt : ${monthlyLoanPayment.toFixed(2)} €</p>
+                        <p>Cash-flow annuel : ${annualCashFlow.toFixed(2)} €</p>
+                        <p>Rentabilité brute : ${grossYield.toFixed(2)}%</p>
+                        <p>Rentabilité nette : ${netYield.toFixed(2)}%</p>
+                    `;
+
+                    // Initialiser le graphique après avoir ajouté le canvas au DOM
+                    const ctx = calculDiv.querySelector('.investmentChart').getContext('2d');
+                    const investmentChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Loyers annuels', 'Charges annuelles', 'Annuité', 'Cash-flow annuel'],
+                            datasets: [{
+                                label: 'Montant (€)',
+                                data: [
+                                    annualRent,
+                                    annualCharges,
+                                    monthlyLoanPayment * 12, // Mensualité annuelle
+                                    annualCashFlow
+                                ],
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.6)',
+                                    'rgba(255, 206, 86, 0.6)',
+                                    'rgba(255, 99, 132, 0.6)',
+                                    'rgba(153, 102, 255, 0.6)'
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Représentation graphique des résultats de la simulation'
+                                },
+                                legend: {
+                                    display: true
+                                }
+                            }
+                        }
+                    });
                 });
 
                 // Gestion de l'événement de suppression
                 const deleteButtons = document.querySelectorAll('.delete-btn');
                 deleteButtons.forEach((button) => {
                     button.addEventListener('click', (e) => {
-                    const docId = e.currentTarget.getAttribute('data-id');
-                    deleteDocument(docId);
+                        const docId = e.currentTarget.getAttribute('data-id');
+                        deleteDocument(docId);
                     });
                 });
             }
-            })
-            .catch((error) => {
+        })
+        .catch((error) => {
             console.error("Erreur lors de la récupération des calculs:", error);
-            calculsList.innerHTML = `<p>Erreur lors de la récupération des calculs: ${error.message}</p>`;
-            });
-        }
+            calculsList.innerHTML = `<p>Erreur lors de la récupération des simulations: ${error.message}</p>`;
+        });
+}
 
 
 
 
         // Fonction pour gérer les changements d'état d'authentification
-        function handleAuthStateChanged(user) {
+        /*function handleAuthStateChanged(user) {
                 displayUserInfo(user);
                 if (user) {
                     displayUserCalculs(user);
                 } else {
-                    document.getElementById('calculsList').innerHTML = '<p>Veuillez vous connecter pour voir vos calculs.</p>';
+                    document.getElementById('calculsList').innerHTML = '<p>Veuillez vous connecter pour voir vos simulations.</p>';
+                    loadHTML('authContainer', 'auth-container.html');
+
                 }
             }
         
         // Écouter les changements d'état d'authentification
-        onAuthStateChanged(auth, handleAuthStateChanged);
+        onAuthStateChanged(auth, handleAuthStateChanged);*/
+
+
+        onAuthStateChanged(auth, (user) => {
+            displayUserInfo(user);
+            loadHTML('authContainer', 'auth-container.html');
+            if (user) {
+                displayUserCalculs(user);
+            }
+        });
+
 
         // Exposer la fonction globalement si nécessaire
         window.refreshUserCalculs = () => {
@@ -220,7 +565,7 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc
         }
 
         // Gestion de la déconnexion
-        logoutButton.addEventListener('click', () => {
+        logoutButtonMobile.addEventListener('click', () => {
             signOut(auth).then(() => {
                 console.log('Utilisateur déconnecté');
             }).catch((error) => {
@@ -228,9 +573,6 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc
             });
         });
 
-
-
-        
 
         
     </script>
