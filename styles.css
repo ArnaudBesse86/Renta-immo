@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#guides-container h1 {
+
+    @apply text-[#2980B9];
+}
+
+.divarticleguide h2 {
+    @apply mb-2 text-[#96CA2D];
+}
+.divarticleguide h2, .divarticleguide p  {
+    @apply mb-2;
+}

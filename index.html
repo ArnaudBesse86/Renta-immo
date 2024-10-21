@@ -6,6 +6,7 @@
     <title>Calculateur de rentabilité d'investissement locatif</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="output.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Gabriela&display=swap');
         .font-gabriela {
@@ -14,12 +15,10 @@
 
         h1, h2, h3, button, a {
         font-family: 'Gabriela', serif!important;
-       }
-
-
-
+        }
         
-        </style>
+    </style>
+
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4">
@@ -27,7 +26,7 @@
             <div class="flex flex-col items-center mx-0">
                 <div class="w-1/6 aspect-[127/110] relative mb-2">
                    
-                    <img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg">
+                    <img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg" alt="calcul Rentabilité Immo">
                         
                 </div>
                 <h1 class="text-center whitespace-nowrap text-[4vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.5vw] font-bold mb-1 font-gabriela">
@@ -95,33 +94,7 @@
                 </div>
 
 
-            <div id="authContainer" class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
-                <div id="loginContainer">
-                    <h2 id="connexion" class="text-xl font-bold mb-4">Connexion</h2>
-                        <input type="email" id="loginEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full" required>
-                        <input type="password" id="loginPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full" required>
-                        <button onclick="login()" class="bg-blue-500 text-white p-2 rounded w-full">Se connecter</button>
-                    <p>Pas encore de compte ? <a class="text-blue-500" onclick="showRegister()">S'inscrire</a></p>
-                </div>
-                <div id="registerContainer" style="display: none;">
-                    <h2 class="text-xl font-bold mb-4">Création de compte</h2>
-                    <input type="text" id="registerFirstName" placeholder="Prénom" class="mb-2 p-2 border rounded w-full" required>
-                    <input type="text" id="registerLastName" placeholder="Nom" class="mb-2 p-2 border rounded w-full" required>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pb-1.5 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-                            <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-                            <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-                            </svg>
-                        </div>
-                        <input type="email" id="registerEmail" placeholder="Email" class="mb-2 p-2 border rounded w-full ps-10" required>
-                    </div> 
-                    <input type="date" id="registerBirthDate" placeholder="Date de naissance" class="mb-2 p-2 border rounded w-full" required>
-                    <input type="password" id="registerPassword" placeholder="Mot de passe" class="mb-2 p-2 border rounded w-full" required>
-                    <button onclick="register()" class="bg-green-500 text-white p-2 rounded w-full">Créer un compte</button>
-                        <p>Déjà un compte ? <a class="text-blue-500" onclick="showLogin()">Se connecter</a></p>
-                </div>
-            </div>
+            <div id="authContainer"></div>
 
 
             <div id="alert-additional-content-3" class="hidden p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
@@ -228,229 +201,21 @@
         </section>
     </div>
 
+
 <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // Importer les objets et fonctions depuis initbdd.js
+    import { app, auth, db, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, collection, getDocs, setDoc, doc, addDoc, getDoc, query, orderBy } from './initbdd.js';
 
-    // Configuration Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyAvdnnSLFslpEGuMiNG_N0BePMNJ0lOqnQ",
-        authDomain: "https://rentabilite-immo.firebaseapp.com",
-        projectId: "rentabilite-immo",
-        storageBucket: "gs://rentabilite-immo.appspot.com",
-        //messagingSenderId: "79218113340",
-       // appId: "1:79218113340:web:6b2c952af5c4c7add07c39",
-        //measurementId: "G-VQCNFHWV5Q"
-        // ... autres configurations
-    };
+// Vous pouvez maintenant utiliser les objets Firebase
+    /*console.log(app);  // Devrait afficher l'instance Firebase
+    console.log(auth); // Devrait afficher l'instance Auth
+    console.log(db);   // Devrait afficher l'instance Firestore*/
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    // Références aux éléments du DOM
-   const userNameElement = document.getElementById('userName');
-    //const logoutButton = document.getElementById('logoutButton');
-    //const myaccount = document.getElementById('myaccount');
-    //const userNameElementMobile = document.getElementById('userNameMobile');
-    const logoutButtonMobile = document.getElementById('logoutButtonMobile');
-    const myaccountMobile = document.getElementById('myaccountMobile');
+
+   
 
     
-
-    // Fonction pour afficher le nom de l'utilisateur
-    async function displayUserInfo(user) {
-        if (user) {
-            try {
-                const docRef = doc(db, 'utilisateurs', user.uid);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                   userNameElement.textContent = `${userData.prenom} ${userData.nom}`;
-                    //logoutButton.style.display = 'inline-block';
-                    //myaccount.style.display = 'inline-block';
-                   // userNameElementMobile.textContent = `${userData.prenom} ${userData.nom} ${userData.email}`;
-                   logoutButtonMobile.style.display = 'inline-block';
-                    myaccountMobile.style.display = 'inline-block';
-                    document.getElementById('authContainer').style.display = 'none';
-                    //document.getElementById('calculatorContainer').style.display = 'block';
-                    const container = document.getElementById('calculatorContainer');
-                    const styles = {
-                        display: 'block',
-                        opacity: 1,
-                    };
-
-                    Object.assign(container.style, styles);
-
-                }
-            } catch (error) {
-                console.error("Erreur lors de la récupération des données utilisateur:", error);
-            }
-        } else {
-            userNameElement.textContent = '';
-            //logoutButton.style.display = 'none';
-           // myaccount.style.display = 'none';
-            //userNameElementMobile.textContent = '';
-            logoutButtonMobile.style.display = 'none';
-            myaccountMobile.style.display = 'none';
-            document.getElementById('authContainer').style.display = 'block';
-            //document.getElementById('calculatorContainer').style.display='none';
-            const container = document.getElementById('calculatorContainer');
-            const styles = {
-                display: 'block',
-                opacity: 0.5,
-            };
-
-            Object.assign(container.style, styles);
-        }
-    }
-
-    // Écouter les changements d'état d'authentification
-    onAuthStateChanged(auth, (user) => {
-        displayUserInfo(user);
-    });
-
-    // Gestion de la déconnexion
-    /*logoutButton.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            console.log('Utilisateur déconnecté');
-        }).catch((error) => {
-            console.error('Erreur lors de la déconnexion:', error);
-        });
-    });*/
-    logoutButtonMobile.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            console.log('Utilisateur déconnecté');
-        }).catch((error) => {
-            console.error('Erreur lors de la déconnexion:', error);
-        });
-    });
-    
-     // Fonction de connexion
-     window.login = function() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-
-                // Récupérer tous les champs requis
-                const requiredFields = document.getElementById('loginContainer').querySelectorAll('input[required]');
-
-                // Boucle sur chaque champ requis
-                requiredFields.forEach(field => {
-                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
-                    if (!field.value) {
-                        field.classList.add('border-red-500');
-                        return;
-                    } else {
-                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
-                        field.classList.remove('border-red-500');
-                    }
-                });
-
-
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Connexion réussie
-                const user = userCredential.user;
-                console.log('Utilisateur connecté:', user);
-                showCalculator();
-                console.log('Utilisateur connecté:', user.email);
-                //userNameElement.textContent = `${user.email}`;
-                //logoutButton.style.display = 'inline-block';
-            })
-            .catch((error) => {
-                console.error('Erreur de connexion:', error);
-                //alert('Erreur de connexion: ' + error.message);
-                showLogin();
-            });
-    }
-
-
-    // Fonction pour valider le mot de passe
-    function validatePassword(password) {
-        // Au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return regex.test(password);
-}
-     // Fonction d'inscription
-     window.register = function() {
-        const email = document.getElementById('registerEmail').value;
-        const password = document.getElementById('registerPassword').value;
-        const prenom = document.getElementById('registerFirstName').value;
-        const nom = document.getElementById('registerLastName').value;
-        const birthDate = document.getElementById('registerBirthDate').value;
-        
-
-        // Validation des champs
-        if (!email || !password || !prenom || !nom || !birthDate) {
-               
-                // Récupérer tous les champs requis
-                const requiredFields = document.getElementById('registerContainer').querySelectorAll('input[required]');
-
-                // Boucle sur chaque champ requis
-                requiredFields.forEach(field => {
-                    // Si le champ est vide ou null, ajouter la classe 'border-red-500'
-                    if (!field.value) {
-                        field.classList.add('border-red-500');
-                    } else {
-                        // Sinon, retirer la classe si elle y est déjà (dans le cas d'une validation précédente)
-                        field.classList.remove('border-red-500');
-                    }
-                });
-                 return;
-           
-           
-            }
-
-            if (!validatePassword(password)) {
-                alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
-                return;
-            }
-
-
-
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Inscription réussie
-                const user = userCredential.user;
-                // Ajouter les informations supplémentaires à Firestore
-                return setDoc(doc(db, 'utilisateurs', user.uid), {
-                    prenom: prenom,
-                    nom: nom,
-                    email: email,
-                    birthDate: birthDate
-                });
-            })
-            .then(() => {
-                console.log('Utilisateur inscrit et données ajoutées à Firestore');
-            })
-            .catch((error) => {
-                console.error('Erreur d\'inscription:', error);
-                alert('Erreur d\'inscription: ' + error.message);
-            });
-    }
-
-
-    // Fonction pour afficher le formulaire de connexion
-    window.showLogin = function() {
-        document.getElementById('loginContainer').style.display = 'block';
-        document.getElementById('registerContainer').style.display = 'none';
-    }
-
-    // Fonction pour afficher le formulaire d'inscription
-    window.showRegister = function() {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('registerContainer').style.display = 'block';
-    }
-
-    function showCalculator() {
-        document.getElementById('authContainer').style.display = 'none';
-        document.getElementById('calculatorContainer').style.display = 'block';
-    }
 
     // Vérifier l'état de l'authentification au chargement de la page
    /* firebase.auth().onAuthStateChanged((user) => {
@@ -562,11 +327,6 @@
         
 
 
-
-
-       
-
-
             let monthlyLoanPayment = 0;
             if (!noLoan) {
                 const monthlyRate = interestRate / 100 / 12;
@@ -671,12 +431,6 @@
 
 
 
-        // Toggle du menu mobile
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
-        });
-
 
         document.getElementById('btn-dismissalert3').addEventListener('click', function() {
             document.getElementById('alert-additional-content-3').classList.add('hidden');
@@ -757,5 +511,7 @@
     }
 
 </script>
+<script type="module" src="fonctions.js"></script>
+
 </body>
 </html>
