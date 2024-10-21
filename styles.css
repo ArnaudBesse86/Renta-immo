@@ -13,3 +13,7 @@
 .divarticleguide h2, .divarticleguide p  {
     @apply mb-2;
 }
+
+#mobileMenu li {
+    @apply border-b border-dotted;
+}

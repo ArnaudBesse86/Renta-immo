@@ -568,3 +568,8 @@ video {
 .divarticleguide h2, .divarticleguide p {
   margin-bottom: 0.5rem;
 }
+
+#mobileMenu li {
+  border-bottom-width: 1px;
+  border-style: dotted;
+}

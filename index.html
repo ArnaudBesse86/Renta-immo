@@ -17,6 +17,7 @@
         font-family: 'Gabriela', serif!important;
         }
         
+        
     </style>
 
 </head>
@@ -26,7 +27,7 @@
             <div class="flex flex-col items-center mx-0">
                 <div class="w-1/6 aspect-[127/110] relative mb-2">
                    
-                    <img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg" alt="calcul Rentabilité Immo">
+                    <a href="index.html"><img class="w-full h-auto" viewBox="0 0 127 110" src="logo/calcul-rentabilite-immo_logo_immeuble.svg" alt="calcul Rentabilité Immo"></a>
                         
                 </div>
                 <h1 class="text-center whitespace-nowrap text-[4vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.5vw] font-bold mb-1 font-gabriela">
@@ -52,12 +53,10 @@
         </header>
 
         <div id="mobileMenu" class="hidden bg-white p-4 rounded-lg shadow-lg mb-4">
-            <ul class="space-y-2">
-                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Ceceilos</a></li>
-                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Foinge</a></li>
-                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Indigges</a></li>
-                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Sumesgs</a></li>
-                <li><a href="#" class="block text-gray-600 hover:text-gray-900">Premium</a></li>
+            <ul class="space-y-2 mb-6">
+                <li><a href="index.html#calculatorContainer" class="block text-gray-600 hover:text-gray-900">Calculateur de rentabilité</a></li>
+                <li><a href="#guides-container" class="block text-gray-600 hover:text-gray-900">Liste des Guides et Articles sur l'investissement locatif immobilier</a></li>
+                <li><a href="#guides-container" class="block text-gray-600 hover:text-gray-900">Retrouvez les études sur les villes dans lesquelles vous souhaitez investir</a></li>
             </ul>
             <div id="userInfoMobile" class="">
                 <a href="myaccount.html" id="myaccountMobile" class="text-blue-500">Mon compte</a>
@@ -69,9 +68,39 @@
 
         <main class="mt-10">
             <h1 class="text-2xl font-bold mb-6">Calculez et maximisez la rentabilité de vos investissements locatifs</h1>
-            <p class="text-x0.5 mb-8">Remplissez ce formulaire pour obtenir instantanément une première estimation de rentabilité.
-                Vous pourrez ensuite accéder à vos fiches projets personnalisées, ainsi qu'à des guides pratiques et simples pour vous accompagner à chaque étape de vos investissements.
-                Optimisez vos profits, créez des leviers et générez des revenus passifs en toute sérénité</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
+                <div class="overflow-hidden flex flex-col justify-between flex-grow border border-dotted border-[#2980B9]">
+                    <p class="p-6 text-sm">
+                        Remplissez ce formulaire pour <b>obtenir instantanément une première estimation de rentabilité</b>.
+                        <br />
+                        Vous pourrez ensuite accéder à vos fiches projets personnalisées sauvegardées sur votre profil.
+                        <br />
+                        Optimisez vos profits, créez des leviers et générez des revenus passifs en toute sérénité</p>
+                        <a href="#calculatorContainer" class="guidelink bg-[#2980B9] text-white px-6 py-2 w-full mx-0 mt-auto">
+                            Aller au calculateur de rentabilité
+                        </a>
+                </div>
+                <div class="overflow-hidden flex flex-col justify-between flex-grow border border-dotted border-[#96CA2D]">
+                    <p class="p-6 text-sm">
+                        Découvrez <b>nos guides et articles sur l'investissement locatif</b> !
+                        <br />Que vous soyez débutant ou expert, <b>accédez à des ressources essentielles pour mieux comprendre les opportunités et optimiser votre rentabilité</b>.
+                        <br />Explorez nos conseils pratiques et passez à l'action en toute confiance !
+                    </p>
+                    <a href="#guides-container" class="guidelink bg-[#96CA2D] text-white px-6 py-2 w-full mx-0 mt-auto">
+                        Voir les Guides et Articles
+                    </a>
+                </div>
+                <div class="overflow-hidden flex flex-col justify-between flex-grow border border-dotted border-[#545454]">
+                    <p class="p-6 text-sm">
+                        <b>Maximisez vos investissements locatifs avec notre étude exclusive</b> sur les tendances du marché et les prix en évolution.
+                        Que vous visiez une petite ville ou une métropole, nous analysons les données démographiques et les opportunités économiques pour vous offrir une vision claire.
+                        <br />Téléchargez un dossier sur la localité de votre choix et optimisez vos décisions d'investissement !
+                    </p>
+                    <a href="#guides-container" class="guidelink bg-[#545454] text-white px-6 py-2 w-full mx-0 mt-auto">
+                       Lancez vos analyses
+                    </a>
+                </div>
+            </div>    
 
 
 
@@ -194,7 +223,7 @@
         </main>
 
         <section class="my-16">
-            <h2 class="text-2xl font-bold mb-6">Guides et Articles sur l'investissment locatif</h2>
+            <h2 class="text-2xl font-bold mb-6">Guides et Articles sur l'investissement locatif</h2>
             <div id="guides-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Les guides seront insérés ici dynamiquement -->
             </div> 
@@ -454,17 +483,19 @@
         // Fonction pour créer une carte de guide
         function createGuideCard(guide, docId) {
             const card = document.createElement('div');
-            card.className = 'bg-white rounded-lg shadow-md overflow-hidden';
+            card.className = 'bg-white rounded-lg shadow-md overflow-hidden flex flex-col justify-between';
             card.innerHTML = `
                 <div class="w-full rounded-full mx-auto flex items-center justify-center">
-                    <img src="${guide.imageGuide}" alt="Guide icon" class="w-full">
+                    <div class="w-full rounded-full mx-auto flex items-center justify-center">
+                        <img src="${guide.imageGuide}" alt="Guide icon" class="w-full">
+                    </div>    
                 </div>
-                <div class="">
+                <div class="flex flex-col justify-between flex-grow">
                     <h3 class="m-6 font-gabriela text-justify">${guide.TitreGuide}</h3>
-                    <p class="text-gray-600 text-justify m-6">
+                    <p class="text-gray-600 text-justify m-6 flex-grow">
                        ${guide.IntroductionGuide}
                     </p>
-                    <button class="guidelink bg-green-500 text-white px-6 py-2 w-full mx-0" data-guide-id="${docId}">
+                    <button class="guidelink bg-green-500 text-white px-6 py-2 w-full mx-0 mt-auto" data-guide-id="${docId}">
                         Lire le Guide
                     </button>
                 </div>
